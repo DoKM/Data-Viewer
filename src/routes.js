@@ -1,20 +1,18 @@
-// Admin Layout
-import Admin from "./layouts/Admin.svelte";
-// Auth Layout
-import Auth from "./layouts/Auth.svelte";
-
-// No Layout Pages
-import Index from "./views/Index.svelte";
-import Landing from "./views/Landing.svelte";
-import Profile from "./views/Profile.svelte";
+import Home from './views/public/Home.svelte'
+import LunchMenuView from './views/public/LunchMenuView.svelte'
+import LunchMenuAdmin from './views/admin/LunchMenuAdmin.svelte'
+import AdminLayout from './views/admin/AdminLayout.svelte'
 
 const routes = [
-  { name: 'admin/*admin', component: Admin },
+  { name: '/', component: Home },
+  { name: '/lunch-menu', component: LunchMenuView },
   {
-    name: 'landing',
-    component: Landing,
+    name: '/admin/manage-menus',
+    component: AdminLayout,
+    nestedRoutes: [
+      { name: 'index', component: LunchMenuAdmin },
+    ],
   },
-  { name: "/", component: Index}
 ]
 
 export { routes }
