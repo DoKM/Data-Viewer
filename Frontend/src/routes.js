@@ -5,7 +5,7 @@ import AdminLayout from './Views/admin/AdminLayout.svelte'
 
 const routes = [
   { name: '/', component: Home },
-  { name: '/collector', component: CollectorView },
+  { name: '/collector/:id', component: CollectorView },
   {
     name: '/admin/manage-menus',
     component: AdminLayout,

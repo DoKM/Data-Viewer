@@ -2,6 +2,7 @@
 	// import { navigateTo } from 'svelte-router-spa'
 	import { Navigate } from 'svelte-router-spa'
 	// logic goes here
+	export let _id;
 	export let name;
 	export let owner;
 	export let description;
@@ -25,7 +26,7 @@
 				{description}
 			</span>
 		</div>
-		<Navigate  to="collector/">
+		<Navigate  to="collector/{_id.toString()}">
 			<button
 			class="w-full h-16 text-lg font-extrabold text-gray-100 transition duration-300 bg-purple-600 rounded-b-lg hover:bg-purple-700">Open</button>
 		</Navigate >

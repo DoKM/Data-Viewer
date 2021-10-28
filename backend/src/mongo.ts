@@ -44,10 +44,12 @@ export class MongoDB {
   };
 
   public getCollectors = async (req: Request, res: Response, next: NextFunction) => {
+    
     await this.collector.find(function (err: Error, products: String) {
       if (err) return next(err);
       res.json(products);
-    });
+      });
+    
   };
 
   public getCollectorById = async (req: Request, res: Response, next: NextFunction) => {
