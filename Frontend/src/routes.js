@@ -1,11 +1,11 @@
-import Home from './views/public/Home.svelte'
-import LunchMenuView from './views/public/LunchMenuView.svelte'
-import LunchMenuAdmin from './views/admin/LunchMenuAdmin.svelte'
-import AdminLayout from './views/admin/AdminLayout.svelte'
+import Home from './Views/public/Home.svelte'
+import CollectorView from './Views/public/CollectorView.svelte'
+import LunchMenuAdmin from './Views/admin/LunchMenuAdmin.svelte'
+import AdminLayout from './Views/admin/AdminLayout.svelte'
 
 const routes = [
   { name: '/', component: Home },
-  { name: '/lunch-menu', component: LunchMenuView },
+  { name: '/collector', component: CollectorView },
   {
     name: '/admin/manage-menus',
     component: AdminLayout,

@@ -1,11 +1,11 @@
 <nav class="bg-blue-900 shadow-lg">
     <div class="container mx-auto">
         <div class="sm:flex">
-            <a href="#" class="text-white text-3xl font-bold p-3">APP LOGO</a>
+            <a href="#" class="p-3 text-3xl font-bold text-white">APP LOGO</a>
 
             <!-- Menus -->
-            <div class="ml-55 mt-4">
-                <ul class="text-white sm:self-center text-xl">
+            <div class="mt-4 ml-55">
+                <ul class="text-xl text-white sm:self-center">
                     <li class="sm:inline-block">
                         <a href="#" class="p-3 hover:text-red-900">About</a>
                     </li>
@@ -26,13 +26,18 @@
 </nav>
 
 <script>
+	import CollectorInfo from './../../Components/Collector/CollectorInfo.svelte';
     import axios from "axios";
-    axios.defaults.headers.common = {'X-Requested-With': 'XMLHttpRequest'}
+    
+    // axios.defaults.headers.common = {'X-Requested-With': 'XMLHttpRequest'}
     axios.defaults.baseURL = 'http://localhost:3000'
 
     import {
 		onMount
 	} from "svelte";
+import AdminLayout from '../admin/AdminLayout.svelte';
+import App from '../../App.svelte';
+import LunchMenuAdmin from '../admin/LunchMenuAdmin.svelte';
 
     let count = 30;
     let name = "undefined"
@@ -51,7 +56,7 @@
         try {
             
         
-            axios.get(`/books/mongo`, { crossdomain: true })
+            axios.get(`/collector`, { crossdomain: true })
 			.then((res) => {
 				collectorList = res.data;
                 console.log(res)
@@ -74,11 +79,11 @@
         
         
         <button id="button" on:click={handleClick}>Test {count}</button>
+        <div class="flex flex-wrap justify-center px-3">
         {#each collectorList as collector}
-            <p id="test">Collector name = {collector.name}</p>
-            <p id="test">Collector owner = {collector.owner}</p>
-            <p id="test">Collector description = {collector.description}</p>
+            <CollectorInfo {...collector}/>
         {/each}
+        </div>
     </div>
 
 
