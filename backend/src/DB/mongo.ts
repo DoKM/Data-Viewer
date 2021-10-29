@@ -28,7 +28,7 @@ export class MongoDB {
     });
   };
 
-  public Migration = () => {
+  public migrate = () => {
     this.connectWithRetry();
     console.log('Mongo connection succesful');
     this.mongoose.connection.on('open', () => {

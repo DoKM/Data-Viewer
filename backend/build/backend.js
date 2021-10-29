@@ -13,10 +13,10 @@ var GracefulShutdownManager = require('@moebius/http-graceful-shutdown').Gracefu
 // const redis = require('./redis.js');
 // const mongo = require('./mongo.js');
 // const es = require('./es.js');
-var mongo_1 = require("./mongo");
+var mongo_1 = require("./DB/mongo");
 var dbManager = new mongo_1.MongoDB();
 console.log('Start migrations');
-dbManager.Migration();
+dbManager.migrate();
 app.use(cors());
 app.use(bodyParser.json());
 app.use('/collector/', router);

@@ -10,11 +10,11 @@ const GracefulShutdownManager = require('@moebius/http-graceful-shutdown').Grace
 // const mongo = require('./mongo.js');
 // const es = require('./es.js');
 
-import { MongoDB } from "./mongo";
+import { MongoDB } from "./DB/mongo";
 const dbManager = new MongoDB()
 
 console.log('Start migrations');
-dbManager.Migration();
+dbManager.migrate();
 
 
 app.use(cors());

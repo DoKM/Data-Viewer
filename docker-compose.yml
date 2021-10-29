@@ -9,17 +9,39 @@ services:
       # - elasticsearch
       - mongo
       # - redis
+      # - zero
+      # - alpha
     links:
       # - postgres
       # - elasticsearch
       - mongo
       # - redis
+      # - zero
+      # - alpha
   frontend:
     build: frontend/
     ports:
       - "8080:80"
     links:
       - backend
+  # zero:
+  #   image: dgraph/dgraph:latest
+  #   volumes:
+  #     - /tmp/data:/dgraph
+  #   ports:
+  #     - 5080:5080
+  #     - 6080:6080
+  #   restart: on-failure
+  #   command: dgraph zero --my=zero:5080
+  # alpha:
+  #   image: dgraph/dgraph:latest
+  #   volumes:
+  #     - /tmp/data:/dgraph
+  #   ports:
+  #     - 8080:8080
+  #     - 9080:9080
+  #   restart: on-failure
+  #   command: dgraph alpha --my=alpha:7080 --zero=zero:5080
   mongo:
     hostname: mongo
     image: mongo
