@@ -20,7 +20,7 @@ export class MongoDB {
   private collector = this.mongoose.model('Collector', this.collectorSchema);
 
   private connectWithRetry = () => {
-    return this.mongoose.connect('mongodb://mongo/simple-crud',  (err: Error) => {
+    return this.mongoose.connect('mongodb://127.0.0.1:27017/simple-crud',  (err: Error) => {
       if (err) {
         console.error('Failed to connect to mongo on startup - retrying in 5 sec', err);
         setTimeout(this.connectWithRetry, 5000);
@@ -44,7 +44,7 @@ export class MongoDB {
   };
 
   public getCollectors = async (req: Request, res: Response, next: NextFunction) => {
-    
+    const collection = await this.mongoose.connection.db.collection("collectors")
     await this.collector.find(function (err: Error, products: String) {
       if (err) return next(err);
       res.json(products);

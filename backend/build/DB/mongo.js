@@ -73,14 +73,18 @@ var MongoDB = /** @class */ (function () {
             });
         };
         this.getCollectors = function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
+            var collection;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.collector.find(function (err, products) {
-                            if (err)
-                                return next(err);
-                            res.json(products);
-                        })];
+                    case 0: return [4 /*yield*/, this.mongoose.connection.db.collection("collectors")];
                     case 1:
+                        collection = _a.sent();
+                        return [4 /*yield*/, this.collector.find(function (err, products) {
+                                if (err)
+                                    return next(err);
+                                res.json(products);
+                            })];
+                    case 2:
                         _a.sent();
                         return [2 /*return*/];
                 }

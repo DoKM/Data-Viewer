@@ -15,6 +15,8 @@ var GracefulShutdownManager = require('@moebius/http-graceful-shutdown').Gracefu
 // const es = require('./es.js');
 var mongo_1 = require("./DB/mongo");
 var dbManager = new mongo_1.MongoDB();
+var DBManager_1 = require("./DB/DBManager");
+var dbManager2 = new DBManager_1.DBManager();
 console.log('Start migrations');
 dbManager.migrate();
 app.use(cors());
@@ -25,6 +27,7 @@ router.get('/:id', dbManager.getCollectorById);
 router.post('/', dbManager.postCollector);
 router.put('/:id', dbManager.updateCollector);
 router.delete('/:id', dbManager.deleteCollector);
+app.get("/test", dbManager2.get);
 var server = app.listen(3000, function () {
     console.log('Books backend running!');
 });
