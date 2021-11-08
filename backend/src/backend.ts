@@ -23,13 +23,14 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.use('/collector/', router);
-router.get('/', dbManager.getCollectors);
-router.get('/:id', dbManager.getCollectorById);
+router.get('/', dbManager2.get);
+router.get('/:id', dbManager2.getByID);
 router.post('/', dbManager.postCollector);
 router.put('/:id', dbManager.updateCollector);
 router.delete('/:id', dbManager.deleteCollector);
 
 app.get("/test", dbManager2.get)
+
 
 const server = app.listen(3000, function() {
   console.log('Books backend running!');

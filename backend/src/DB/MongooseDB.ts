@@ -18,10 +18,11 @@ export class MongooseDB implements DatabaseInterface {
         this.mongoose = new Mongoose()
         this.connect("simple-crud")
     }
+   
     private mongoose: Mongoose
 
     private async connect(urlPart: string): Promise < void > {
-        let url = `mongodb://mongo/${urlPart}`;
+        let url = `mongodb://127.0.0.1:27017/${urlPart}`;
 
         return await new Promise < void > ((resolve, reject) => {
             let tryAmount = 0;
@@ -52,59 +53,43 @@ export class MongooseDB implements DatabaseInterface {
 
     }
 
-    public getAll = async (collectionName: string):Promise<string> => {
+    public getAll = async (collectionName: string, res:Response):Promise<void> => {
         console.log("waddup")
 
         console.log("my name =")
-        let collections = await this.mongoose.connection.db.collections()
-        console.log(collections)
-        let collection = await this.mongoose.connection.collection(collectionName)
-        let schema
+        // let collections = await this.mongoose.connection.db.collections()
+        // console.log(collections)
+        let collection = this.mongoose.connection.collection(collectionName)
+        
         // collection.d
-        console.log(await collection.countDocuments())
+        // console.log(await collection.countDocuments())
         // console.log(await collection.stats())
 
-        let result = await collection.find({})
-        console.log(result)
-        // res.json(result)
-        return ""
+        collection.find(function (err: Error, products: String) {
+            if (!err) {
+            res.json(products);
+            }
+            });
+        
+        return
+        
 
 
 
     }
 
-    public getAllWith(location: JSON): string {
-        return "";
-    }
-    public getID(id: string, location: JSON): string {
-        return "";
-    }
-    public getFirst(location: JSON): string {
-        return "";
-    }
-    public create(location: JSON, jsonData: JSON): boolean {
-        return false
-    }
-    public createWithReturn(location: JSON, jsonData: JSON): string {
-        return "";
-    }
-    public update(id: string, location: JSON, jsonData: JSON): boolean {
-        return false
-    }
-    public updateWithReturn(id: string, location: JSON, jsonData: JSON): string {
-        return "string"
-    }
-    public delete(id: string, location: JSON): boolean {
-        return false
-    }
-    public createTable(type: JSON): boolean {
-        return false
-    }
-    public migrateTable(type: JSON, table: string): boolean {
-        return false
-    }
-    public resetDB(): boolean {
-        return false
-    }
+    public getAllWith = async (location: JSON): Promise<void> => { return }
+    public getID = async (location: string, id: string, res: Response): Promise<void> => { return }
+    public getFirst = async (location: JSON): Promise<void> => { return }
+    public create = async (location: JSON, jsonData: JSON): Promise<void> => { return }
+    public createWithReturn = async (location: JSON, jsonData: JSON): Promise<void> => { return }
+    public update = async (id: string, location: JSON, jsonData: JSON): Promise<void> => { return }
+    public updateWithReturn = async (id: string, location: JSON, jsonData: JSON): Promise<void> => { return }
+    public delete = async (id: string, location: JSON): Promise<void> => { return }
+    public createTable = async (type: JSON): Promise<void> => { return }
+    public migrateTable = async (type: JSON, table: string): Promise<void> => { return }
+    public resetDB = async (): Promise<void> => { return }
+
+
 
 }

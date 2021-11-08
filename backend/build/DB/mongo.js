@@ -50,7 +50,7 @@ var MongoDB = /** @class */ (function () {
         });
         this.collector = this.mongoose.model('Collector', this.collectorSchema);
         this.connectWithRetry = function () {
-            return _this.mongoose.connect('mongodb://mongo/simple-crud', function (err) {
+            return _this.mongoose.connect('mongodb://127.0.0.1:27017/simple-crud', function (err) {
                 if (err) {
                     console.error('Failed to connect to mongo on startup - retrying in 5 sec', err);
                     setTimeout(_this.connectWithRetry, 5000);

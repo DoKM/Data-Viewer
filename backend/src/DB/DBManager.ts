@@ -4,7 +4,7 @@ import {
     Response
   } from "express";
 import { DatabaseInterface } from "./DBInterface"
-import { MongooseDB as MongoDBBBB } from "./MongooseDB"
+// import { MongooseDB as MongoDBBBB } from "./MongooseDB"
 import { MongoDB } from "./MongoDB";
 export class DBManager{
     constructor(){
@@ -16,10 +16,15 @@ export class DBManager{
 
     public get = (req: Request, res: Response, next: NextFunction) => {
         console.log("yo")
-        this.db.getAll("collectors").then((result) => {
-            // console.log(result)
-            res.json(result)
-        })
+        let collection = req.params["collection"]?req.params["collection"]:"collectors"
+        this.db.getAll(collection, res)
 
+    }
+
+    public getByID = (req: Request, res: Response, next: NextFunction) => {
+        let collection = req.params["collection"]?req.params["collection"]:"collectors"
+        let id = req.params["id"]
+        console.log(id)
+        this.db.getID(collection, id, res)
     }
 }

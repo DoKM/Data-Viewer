@@ -42,35 +42,51 @@ var mongoose_2 = require("mongoose");
 var MongooseDB = /** @class */ (function () {
     function MongooseDB() {
         var _this = this;
-        this.getAll = function (collectionName) { return __awaiter(_this, void 0, void 0, function () {
-            var collections, collection, schema, _a, _b, result;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
-                    case 0:
-                        console.log("waddup");
-                        console.log("my name =");
-                        return [4 /*yield*/, this.mongoose.connection.db.collections()];
-                    case 1:
-                        collections = _c.sent();
-                        console.log(collections);
-                        return [4 /*yield*/, this.mongoose.connection.collection(collectionName)];
-                    case 2:
-                        collection = _c.sent();
-                        // collection.d
-                        _b = (_a = console).log;
-                        return [4 /*yield*/, collection.countDocuments()];
-                    case 3:
-                        // collection.d
-                        _b.apply(_a, [_c.sent()]);
-                        return [4 /*yield*/, collection.find({})];
-                    case 4:
-                        result = _c.sent();
-                        console.log(result);
-                        // res.json(result)
-                        return [2 /*return*/, ""];
-                }
+        this.getAll = function (collectionName, res) { return __awaiter(_this, void 0, void 0, function () {
+            var collection, result;
+            return __generator(this, function (_a) {
+                console.log("waddup");
+                console.log("my name =");
+                collection = this.mongoose.connection.collection(collectionName);
+                result = collection.find({});
+                console.log(result);
+                res.json(result);
+                return [2 /*return*/];
             });
         }); };
+        this.getAllWith = function (location) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+            return [2 /*return*/];
+        }); }); };
+        this.getID = function (location, id, res) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+            return [2 /*return*/];
+        }); }); };
+        this.getFirst = function (location) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+            return [2 /*return*/];
+        }); }); };
+        this.create = function (location, jsonData) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+            return [2 /*return*/];
+        }); }); };
+        this.createWithReturn = function (location, jsonData) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+            return [2 /*return*/];
+        }); }); };
+        this.update = function (id, location, jsonData) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+            return [2 /*return*/];
+        }); }); };
+        this.updateWithReturn = function (id, location, jsonData) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+            return [2 /*return*/];
+        }); }); };
+        this.delete = function (id, location) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+            return [2 /*return*/];
+        }); }); };
+        this.createTable = function (type) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+            return [2 /*return*/];
+        }); }); };
+        this.migrateTable = function (type, table) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+            return [2 /*return*/];
+        }); }); };
+        this.resetDB = function () { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+            return [2 /*return*/];
+        }); }); };
         this.mongoose = new mongoose_1.Mongoose();
         this.connect("simple-crud");
     }
@@ -108,39 +124,6 @@ var MongooseDB = /** @class */ (function () {
         });
     };
     MongooseDB.prototype.migrate = function () {
-    };
-    MongooseDB.prototype.getAllWith = function (location) {
-        return "";
-    };
-    MongooseDB.prototype.getID = function (id, location) {
-        return "";
-    };
-    MongooseDB.prototype.getFirst = function (location) {
-        return "";
-    };
-    MongooseDB.prototype.create = function (location, jsonData) {
-        return false;
-    };
-    MongooseDB.prototype.createWithReturn = function (location, jsonData) {
-        return "";
-    };
-    MongooseDB.prototype.update = function (id, location, jsonData) {
-        return false;
-    };
-    MongooseDB.prototype.updateWithReturn = function (id, location, jsonData) {
-        return "string";
-    };
-    MongooseDB.prototype.delete = function (id, location) {
-        return false;
-    };
-    MongooseDB.prototype.createTable = function (type) {
-        return false;
-    };
-    MongooseDB.prototype.migrateTable = function (type, table) {
-        return false;
-    };
-    MongooseDB.prototype.resetDB = function () {
-        return false;
     };
     return MongooseDB;
 }());

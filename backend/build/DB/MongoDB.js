@@ -41,42 +41,105 @@ var mongodb_1 = require("mongodb");
 var MongoDB = /** @class */ (function () {
     function MongoDB() {
         var _this = this;
-        this.getAll = function (location) { return __awaiter(_this, void 0, void 0, function () {
-            var collection, returnThing, array, docArray;
+        this.getAll = function (location, res) { return __awaiter(_this, void 0, void 0, function () {
+            var collection;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.db.collection(location)];
                     case 1:
                         collection = _a.sent();
                         console.log(collection);
-                        returnThing = "";
-                        array = [];
-                        return [4 /*yield*/, collection.find({}, { projection: { _id: 0 } }).toArray()];
-                    case 2:
-                        docArray = _a.sent();
-                        console.log(docArray);
-                        return [2 /*return*/, docArray.toString()];
+                        // let docArray = await collection.find({}, { projection: { _id: 0 } }).toArray();
+                        // console.log(docArray)
+                        // docArray.forEach(doc=> {
+                        //     console.log(doc.toString())
+                        // })
+                        // await collection.find(function (err: Error, products: string) {
+                        //     if (err) throw err
+                        //     console.log(JSON.parse(products));
+                        //     });
+                        this.db.collection(location).find({}).toArray(function (err, result) {
+                            if (err) {
+                                res.status(400).send("Error fetching listings!");
+                            }
+                            else {
+                                console.log(result);
+                                res.json(result);
+                            }
+                        });
+                        return [2 /*return*/];
                 }
             });
         }); };
+        this.getAllWith = function (location) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+            return [2 /*return*/];
+        }); }); };
+        this.getID = function (location, id, res) { return __awaiter(_this, void 0, void 0, function () {
+            var collection;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.db.collection(location)];
+                    case 1:
+                        collection = _a.sent();
+                        console.log(collection);
+                        // let returnThing = ""
+                        // let array:string[] = []
+                        // let docArray = await collection.find({}, { projection: { _id: 0 } }).toArray();
+                        // console.log(docArray)
+                        // docArray.forEach(doc=> {
+                        //     console.log(doc.toString())
+                        // })
+                        // await collection.find(function (err: Error, products: string) {
+                        //     if (err) throw err
+                        //     console.log(JSON.parse(products));
+                        //     });
+                        this.db.collection(location).find({ id: id }).toArray(function (err, result) {
+                            if (err) {
+                                res.status(400).send("Error fetching listings!");
+                            }
+                            else {
+                                console.log(result);
+                                res.json(result);
+                            }
+                        });
+                        return [2 /*return*/];
+                }
+            });
+        }); };
+        this.getFirst = function (location) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+            return [2 /*return*/];
+        }); }); };
+        this.create = function (location, jsonData) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+            return [2 /*return*/];
+        }); }); };
+        this.createWithReturn = function (location, jsonData) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+            return [2 /*return*/];
+        }); }); };
+        this.update = function (id, location, jsonData) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+            return [2 /*return*/];
+        }); }); };
+        this.updateWithReturn = function (id, location, jsonData) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+            return [2 /*return*/];
+        }); }); };
+        this.delete = function (id, location) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+            return [2 /*return*/];
+        }); }); };
+        this.createTable = function (type) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+            return [2 /*return*/];
+        }); }); };
+        this.migrateTable = function (type, table) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+            return [2 /*return*/];
+        }); }); };
+        this.resetDB = function () { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+            return [2 /*return*/];
+        }); }); };
         var urlPart = "simple-crud";
-        var url = "mongodb://mongo/";
+        var url = "mongodb://127.0.0.1:27017/";
         this.mongoClient = new mongodb_1.MongoClient(url);
         this.mongoClient.connect();
         this.db = this.mongoClient.db(urlPart);
     }
     MongoDB.prototype.migrate = function () { };
-    MongoDB.prototype.getAllWith = function (location) { return ""; };
-    MongoDB.prototype.getID = function (id, location) { return ""; };
-    MongoDB.prototype.getFirst = function (location) { return ""; };
-    MongoDB.prototype.create = function (location, jsonData) { return false; };
-    MongoDB.prototype.createWithReturn = function (location, jsonData) { return ""; };
-    MongoDB.prototype.update = function (id, location, jsonData) { return false; };
-    MongoDB.prototype.updateWithReturn = function (id, location, jsonData) { return ""; };
-    MongoDB.prototype.delete = function (id, location) { return false; };
-    MongoDB.prototype.createTable = function (type) { return false; };
-    MongoDB.prototype.migrateTable = function (type, table) { return false; };
-    MongoDB.prototype.resetDB = function () { return false; };
     return MongoDB;
 }());
 exports.MongoDB = MongoDB;
