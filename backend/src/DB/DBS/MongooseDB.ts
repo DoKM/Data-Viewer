@@ -1,13 +1,12 @@
 import {
     CallbackError,
+    Document,
     Mongoose
 } from "mongoose";
 import {
     DatabaseInterface
 } from "./DBInterface";
-import {
-    Error
-} from "mongoose";
+import { Error } from 'mongoose';
 import e, {
     Response
 } from "express";
@@ -54,62 +53,52 @@ export class MongooseDB implements DatabaseInterface {
 
     }
 
-    public getAll = async (collectionName: string, res:Response):Promise<void> => {
+    public getAll = async (collectionName: string, res:Response):Promise<string> => {
+        return new Promise < string > (async (resolve, reject) => {
 
-
-        let collection = this.mongoose.connection.collection(collectionName)
+            let collection = this.mongoose.connection.collection(collectionName)
         
-
-        collection.find().toArray(function (err, result) {
-
-            if (err) {
-                res.status(400).send("Error fetching listings!");
-            } else {
-                res.json(result);
-            }
+            await collection.find().toArray(function(err, results){
+            
+                resolve(JSON.stringify(results))
+            })
         })
         
-        return
+        
     }
 
     public getAllWith = async (location: JSON): Promise<void> => { return }
-    public getID = async (collectionName: string, id: string, res: Response): Promise<void> => { 
+    public getID = async (collectionName: string, id: string, res: Response): Promise<string> => { 
     
         let collection = this.mongoose.connection.collection(collectionName)
         
         
         let o_id = new ObjectId(id);
         
-        let result = await collection.findOne({"_id": o_id})
-
-        if(result != null){
-            res.json(result)
-        } else {
-            res.status(400).send("Error fetching listing!");
-        }
+        let result = await collection.findOne({"_id": o_id});
+    
+        return JSON.stringify(result)
     }
 
     public getFirst = async (location: JSON): Promise<void> => { return }
-    public create = async (collectionName: string, data:JSON, res: Response): Promise<void> => { 
+    public create = async (collectionName: string, data:JSON, res: Response): Promise<string> => { 
 
         let collection = this.mongoose.connection.collection(collectionName)
-        collection.insertOne(data)
-        res.json(data)
-
+        let document = await collection.insertOne(data)
+        return document.insertedId.toString();
+        
     }
 
     public createMany = async (collectionName:string, data: JSON[], res:Response) => {
         let collection = this.mongoose.connection.collection(collectionName)
         
         collection.insertMany(data)
-        res.json(data)
     }
 
     public createWithReturn = async (location: JSON, jsonData: JSON): Promise<void> => { return }
 
     public createCollection = async (collectionName: string, res:Response): Promise<void> => {
         await this.mongoose.connection.createCollection(collectionName);
-        res.sendStatus(200);
     }
 
     public update = async (id: string, location: JSON, jsonData: JSON): Promise<void> => { return }

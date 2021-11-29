@@ -3,38 +3,41 @@ import {
     Request,
     Response
   } from "express";
-import { DatabaseInterface } from "./DBS/DBInterface"
+import { DatabaseInterface } from "../DBS/DBInterface"
 
 export class DBManager{
     constructor(dbManager: DatabaseInterface){
         this.db = dbManager
     }
 
-    private db: DatabaseInterface
+    protected db: DatabaseInterface
 
-    public get = (req: Request, res: Response, next: NextFunction) => {
+    public get = async (req: Request, res: Response, next: NextFunction) => {
         console.log("yo")
         let collection = req.params["collection"]?req.params["collection"]:"collectors"
-        this.db.getAll(collection, res)
-
+        let result = await this.db.getAll(collection, res)
+        res.send(result)
     }
 
-    public getByID = (req: Request, res: Response, next: NextFunction) => {
+    public getByID = async (req: Request, res: Response, next: NextFunction) => {
         let collection = req.params["collection"]?req.params["collection"]:"collectors"
         let id = req.params["id"]
         console.log(id)
-        this.db.getID(collection, id, res)
+        let result = await this.db.getID(collection, id, res)
+        res.send(result)
     }
 
-    public create = (req: Request, res: Response, next:NextFunction)=>{
+    public create = async (req: Request, res: Response, next:NextFunction)=>{
         let collection = req.params["collection"]?req.params["collection"]:"collectors"
         console.log(req.body);
-        this.db.create(collection, req.body, res)
+        let result = this.db.create(collection, req.body, res)
+        res.sendStatus(200).send(result)
     }
 
-    public createMany = (req:Request, res: Response, next:NextFunction) => {
+    public createMany = async (req:Request, res: Response, next:NextFunction) => {
         let collection = req.params["collection"]?req.params["collection"]:"collectors"
         console.log(req.body);
         this.db.createMany(collection, req.body, res)
+        res.sendStatus(200)
     }
 }

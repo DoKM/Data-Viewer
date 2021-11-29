@@ -1,6 +1,8 @@
 import { DatabaseInterface } from "./DBS/DBInterface"
-import { DBManager } from "./DBManager"
+import { DBManager } from "./DBManagers/DBManager"
 import { MongooseDB as Database } from "./DBS/MongooseDB"
+import { LoggerManager } from "./DBManagers/LoggerManager"
+import { TripsManager } from "./DBManagers/TripsManager"
 
 export class DBManagers {
 
@@ -9,7 +11,12 @@ export class DBManagers {
     constructor(){
         this.db = new Database()
         this.default = new DBManager(this.db)
+        this.logger = new LoggerManager(this.db)
+        this.trips = new TripsManager(this.db)
     }
 
     public default:DBManager
+    public logger:DBManager
+    public trips:DBManager
+
 }

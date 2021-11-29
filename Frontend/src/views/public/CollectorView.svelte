@@ -47,6 +47,11 @@
         }catch (error) {
             console.log(error)
         }
+        if(id != undefined){
+            axios.get(`/collector/id/${currentRoute.namedParams.id}`, { crossdomain: true })
+			.then((res) => {
+            }
+        }
     }
   </script>
   

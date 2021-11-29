@@ -1,9 +1,10 @@
 import express from "express";
-const router = express.Router();
+
 const app = express();
 const bodyParser = require('body-parser');
 const cors = require('permissive-cors');
 const GracefulShutdownManager = require('@moebius/http-graceful-shutdown').GracefulShutdownManager;
+import { Router } from "./DB/Router";
 
 // const postgres = require('./postgres.js');
 // const redis = require('./redis.js');
@@ -14,7 +15,8 @@ const GracefulShutdownManager = require('@moebius/http-graceful-shutdown').Grace
 
 import { MongoDB } from "./DB/DBS/mongo";
 const dbManager = new MongoDB()
-import { DBManagers } from "./DB/DBMangers";
+import { DBManagers } from './DB/DBMangers';
+import { DBManager } from './DB/DBManagers/DBManager';
 const dbManagers = new DBManagers();
 
 console.log('Start migrations');
@@ -23,14 +25,9 @@ dbManager.migrate();
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use('/collector/coll/:collection/', new Router(dbManagers.trips).getRouter());
+app.use('/collector/', new Router(dbManagers.logger).getRouter());
 
-app.use('/collector/', router);
-router.get('/', dbManagers.default.get);
-router.get('/id/:id', dbManagers.default.getByID);
-router.post('/', dbManagers.default.create);
-router.post('/arr', dbManagers.default.createMany)
-router.put('/id/:id', dbManager.updateCollector);
-router.delete('/id/:id', dbManager.deleteCollector);
 
 app.get("/test", dbManagers.default.get)
 
