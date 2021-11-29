@@ -43,14 +43,19 @@ var MongooseDB = /** @class */ (function () {
     function MongooseDB() {
         var _this = this;
         this.getAll = function (collectionName, res) { return __awaiter(_this, void 0, void 0, function () {
-            var collection, result;
+            var collection;
             return __generator(this, function (_a) {
                 console.log("waddup");
                 console.log("my name =");
                 collection = this.mongoose.connection.collection(collectionName);
-                result = collection.find({});
-                console.log(result);
-                res.json(result);
+                // collection.d
+                // console.log(await collection.countDocuments())
+                // console.log(await collection.stats())
+                collection.find(function (err, products) {
+                    if (!err) {
+                        res.json(products);
+                    }
+                });
                 return [2 /*return*/];
             });
         }); };
@@ -97,7 +102,7 @@ var MongooseDB = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        url = "mongodb://mongo/" + urlPart;
+                        url = "mongodb://127.0.0.1:27017/" + urlPart;
                         return [4 /*yield*/, new Promise(function (resolve, reject) {
                                 var tryAmount = 0;
                                 var connectHandler = function (url, tryAmount) {

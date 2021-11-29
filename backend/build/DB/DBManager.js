@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DBManager = void 0;
-var MongooseDB_1 = require("./MongooseDB");
+// import { MongooseDB as MongoDBBBB } from "./MongooseDB"
+var MongoDB_1 = require("./MongoDB");
 var DBManager = /** @class */ (function () {
     function DBManager() {
         var _this = this;
@@ -13,10 +14,10 @@ var DBManager = /** @class */ (function () {
         this.getByID = function (req, res, next) {
             var collection = req.params["collection"] ? req.params["collection"] : "collectors";
             var id = req.params["id"];
-            console.log("peepee");
+            console.log(id);
             _this.db.getID(collection, id, res);
         };
-        this.db = new MongooseDB_1.MongooseDB();
+        this.db = new MongoDB_1.MongoDB();
     }
     return DBManager;
 }());

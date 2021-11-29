@@ -6,7 +6,8 @@ export interface DatabaseInterface {
     getAllWith: (location:JSON) => Promise<void>;
     getID: (location: string, id:string, response:Response) => Promise<void>;
     getFirst: (location:JSON) => Promise<void>;
-    create: (location: JSON, jsonData: JSON) => Promise<void>;
+    create: (collectionName: string, data:JSON, res: Response) => Promise<void>;
+    createMany: (collectionName: string, data:JSON[], res: Response) => Promise<void>;
     createWithReturn: (location: JSON, jsonData: JSON) => Promise<void>;
     update: (id: string, location: JSON, jsonData:JSON) => Promise<void>;
     updateWithReturn: (id: string, location: JSON, jsonData: JSON) => Promise<void>;
@@ -14,4 +15,5 @@ export interface DatabaseInterface {
     createTable: (type: JSON) => Promise<void>;
     migrateTable: (type: JSON, table: string) => Promise<void>;
     resetDB: () => Promise<void>;
+    createCollection: (collectionName: string, res: Response) => Promise<void>;
 }

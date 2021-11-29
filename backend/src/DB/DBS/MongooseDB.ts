@@ -12,6 +12,7 @@ import e, {
     Response
 } from "express";
 import { resourceLimits } from "worker_threads";
+import { ObjectId } from "bson";
 
 export class MongooseDB implements DatabaseInterface {
     constructor() {
@@ -54,35 +55,63 @@ export class MongooseDB implements DatabaseInterface {
     }
 
     public getAll = async (collectionName: string, res:Response):Promise<void> => {
-        console.log("waddup")
 
-        console.log("my name =")
-        // let collections = await this.mongoose.connection.db.collections()
-        // console.log(collections)
+
         let collection = this.mongoose.connection.collection(collectionName)
         
-        // collection.d
-        // console.log(await collection.countDocuments())
-        // console.log(await collection.stats())
 
-        collection.find(function (err: Error, products: String) {
-            if (!err) {
-            res.json(products);
+        collection.find().toArray(function (err, result) {
+
+            if (err) {
+                res.status(400).send("Error fetching listings!");
+            } else {
+                res.json(result);
             }
-            });
+        })
         
         return
-        
-
-
-
     }
 
     public getAllWith = async (location: JSON): Promise<void> => { return }
-    public getID = async (location: string, id: string, res: Response): Promise<void> => { return }
+    public getID = async (collectionName: string, id: string, res: Response): Promise<void> => { 
+    
+        let collection = this.mongoose.connection.collection(collectionName)
+        
+        
+        let o_id = new ObjectId(id);
+        
+        let result = await collection.findOne({"_id": o_id})
+
+        if(result != null){
+            res.json(result)
+        } else {
+            res.status(400).send("Error fetching listing!");
+        }
+    }
+
     public getFirst = async (location: JSON): Promise<void> => { return }
-    public create = async (location: JSON, jsonData: JSON): Promise<void> => { return }
+    public create = async (collectionName: string, data:JSON, res: Response): Promise<void> => { 
+
+        let collection = this.mongoose.connection.collection(collectionName)
+        collection.insertOne(data)
+        res.json(data)
+
+    }
+
+    public createMany = async (collectionName:string, data: JSON[], res:Response) => {
+        let collection = this.mongoose.connection.collection(collectionName)
+        
+        collection.insertMany(data)
+        res.json(data)
+    }
+
     public createWithReturn = async (location: JSON, jsonData: JSON): Promise<void> => { return }
+
+    public createCollection = async (collectionName: string, res:Response): Promise<void> => {
+        await this.mongoose.connection.createCollection(collectionName);
+        res.sendStatus(200);
+    }
+
     public update = async (id: string, location: JSON, jsonData: JSON): Promise<void> => { return }
     public updateWithReturn = async (id: string, location: JSON, jsonData: JSON): Promise<void> => { return }
     public delete = async (id: string, location: JSON): Promise<void> => { return }

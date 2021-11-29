@@ -75,25 +75,16 @@ var MongoDB = /** @class */ (function () {
             return [2 /*return*/];
         }); }); };
         this.getID = function (location, id, res) { return __awaiter(_this, void 0, void 0, function () {
-            var collection;
+            var collection, o_id;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.db.collection(location)];
                     case 1:
                         collection = _a.sent();
-                        console.log(collection);
-                        // let returnThing = ""
-                        // let array:string[] = []
-                        // let docArray = await collection.find({}, { projection: { _id: 0 } }).toArray();
-                        // console.log(docArray)
-                        // docArray.forEach(doc=> {
-                        //     console.log(doc.toString())
-                        // })
-                        // await collection.find(function (err: Error, products: string) {
-                        //     if (err) throw err
-                        //     console.log(JSON.parse(products));
-                        //     });
-                        this.db.collection(location).find({ id: id }).toArray(function (err, result) {
+                        console.log(location);
+                        o_id = new mongodb_1.ObjectId(id);
+                        console.log(o_id);
+                        this.db.collection(location).find({ _id: o_id }).toArray(function (err, result) {
                             if (err) {
                                 res.status(400).send("Error fetching listings!");
                             }

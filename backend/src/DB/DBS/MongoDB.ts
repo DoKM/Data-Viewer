@@ -1,3 +1,4 @@
+//UNUSED CODE
 import { Response } from "express";
 import { DatabaseInterface } from "./DBInterface";
 import { AnyError, Db, FindCursor, MongoClient, ReturnDocument, ObjectId  } from "mongodb"
@@ -70,14 +71,16 @@ export class MongoDB implements DatabaseInterface{
         let o_id = new ObjectId(id);
         console.log(o_id)
         this.db.collection(location).find({_id:o_id}).toArray(function (err, result) {
+
             if (err) {
+                console.log(err)
                 res.status(400).send("Error fetching listings!");
              } else {
-                 console.log(result)
+                console.log("Wut")
                 res.json(result);
               }
         })
-        return
+        // return
     }
     public getFirst = async (location: JSON):Promise<void> => { return}
     public create = async (location: JSON, jsonData: JSON):Promise<void> => { return }

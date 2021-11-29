@@ -10,10 +10,12 @@ const GracefulShutdownManager = require('@moebius/http-graceful-shutdown').Grace
 // const mongo = require('./mongo.js');
 // const es = require('./es.js');
 
-import { MongoDB } from "./DB/mongo";
+
+
+import { MongoDB } from "./DB/DBS/mongo";
 const dbManager = new MongoDB()
-import {DBManager} from "./DB/DBManager"
-const dbManager2 = new DBManager()
+import { DBManagers } from "./DB/DBMangers";
+const dbManagers = new DBManagers();
 
 console.log('Start migrations');
 dbManager.migrate();
@@ -23,13 +25,14 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.use('/collector/', router);
-router.get('/', dbManager2.get);
-router.get('/:id', dbManager2.getByID);
-router.post('/', dbManager.postCollector);
-router.put('/:id', dbManager.updateCollector);
-router.delete('/:id', dbManager.deleteCollector);
+router.get('/', dbManagers.default.get);
+router.get('/id/:id', dbManagers.default.getByID);
+router.post('/', dbManagers.default.create);
+router.post('/arr', dbManagers.default.createMany)
+router.put('/id/:id', dbManager.updateCollector);
+router.delete('/id/:id', dbManager.deleteCollector);
 
-app.get("/test", dbManager2.get)
+app.get("/test", dbManagers.default.get)
 
 
 const server = app.listen(3000, function() {

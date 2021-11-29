@@ -31,7 +31,7 @@
         try {
             
         
-            axios.get(`/collector/${currentRoute.namedParams.id}`, { crossdomain: true })
+            axios.get(`/collector/id/${currentRoute.namedParams.id}`, { crossdomain: true })
 			.then((res) => {
 				let collector = res.data;
                 name = collector.name
