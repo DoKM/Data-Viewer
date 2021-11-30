@@ -1,9 +1,12 @@
 import express from "express";
 
+// import Morgan from 'morgan';
+
 const app = express();
 const bodyParser = require('body-parser');
 const cors = require('permissive-cors');
 const GracefulShutdownManager = require('@moebius/http-graceful-shutdown').GracefulShutdownManager;
+
 import { Router } from "./DB/Router";
 
 // const postgres = require('./postgres.js');
@@ -13,24 +16,25 @@ import { Router } from "./DB/Router";
 
 
 
-import { MongoDB } from "./DB/DBS/mongo";
-const dbManager = new MongoDB()
+// import { MongoDB } from "./DB/DBS/mongo";
+// const dbManager = new MongoDB()
 import { DBManagers } from './DB/DBMangers';
 import { DBManager } from './DB/DBManagers/DBManager';
 const dbManagers = new DBManagers();
 
 console.log('Start migrations');
-dbManager.migrate();
+// dbManager.migrate();
 
+
+// app.use(Morgan('combined'))
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use('/collector/coll/:collection/', new Router(dbManagers.trips).getRouter());
 app.use('/collector/', new Router(dbManagers.logger).getRouter());
+app.use('/trips/', new Router(dbManagers.trips).getRouter());
 
 
-app.get("/test", dbManagers.default.get)
-
+// console.log(app._router.stack)
 
 const server = app.listen(3000, function() {
   console.log('Books backend running!');

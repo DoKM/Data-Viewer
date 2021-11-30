@@ -9,6 +9,7 @@ export class DBManager{
     constructor(dbManager: DatabaseInterface){
         this.db = dbManager
     }
+    public prefix:string = ""
 
     protected db: DatabaseInterface
 

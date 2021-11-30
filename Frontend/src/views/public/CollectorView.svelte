@@ -16,10 +16,11 @@
     import {
 		onMount
 	} from "svelte";
+import TripsListItem from '../../Components/Collector/TripsListItem.svelte';
 
     export let currentRoute
 
-    onMount(loadCollector)
+    onMount(loadstuff)
 
     
     export let name
@@ -27,31 +28,53 @@
     export let owner
     export let description
 
+    export let trips
+
+
+    async function loadstuff(){
+        await loadCollector();
+        await loadTrips();
+    }
+
     function loadCollector(){
-        try {
+        return new Promise((resolve, reject)=>{
+            try {
             
-        
-            axios.get(`/collector/id/${currentRoute.namedParams.id}`, { crossdomain: true })
-			.then((res) => {
-				let collector = res.data;
-                name = collector.name
-                owner = collector.owner
-                id = collector._id
-                description = collector.description
-                console.log(description)
-                console.log(collector)
-                console.log(res)
+                axios.get(`/collector/id/${currentRoute.namedParams.id}`, { crossdomain: true })
+			    .then((res) => {
+                    console.log(res)
+				    let collector = res.data;
+                    name = collector.name
+                    owner = collector.owner
+                    id = collector._id
+                    description = collector.description
+                    // console.log(description)
+                    // console.log(collector)
+                    // console.log(res)
+                    resolve();
+			    });
+            }catch (error) {
                 
-        // name = "pjenis"
-			});
-        }catch (error) {
-            console.log(error)
-        }
-        if(id != undefined){
-            axios.get(`/collector/id/${currentRoute.namedParams.id}`, { crossdomain: true })
-			.then((res) => {
+                console.log(error)
+                reject(error)
             }
-        }
+        })
+    }
+
+    function loadTrips(){
+        return new Promise((resolve, reject)=>{
+            try{
+                axios.get(`/trips/collector/${currentRoute.namedParams.id}`, { crossdomain: true })
+			    .then((res) => {
+                    console.log(res.data)
+                    trips = res.data
+                    resolve()
+                })
+            }catch(error){
+                reject(error)
+            }
+        })
+        
     }
   </script>
   
@@ -63,4 +86,24 @@
     <h1 class="title is-4">Description / {description}</h1>
 
 
+  </div>
+  <div>
+
+    {#if trips != undefined && trips.length >= 1}
+        <table>
+            <tr>
+                {#each Object.keys(trips[0]) as key}
+                    <th>
+                        {key}
+                    </th>
+                {/each}
+            </tr>
+            {#each trips as trip}
+                <TripsListItem trip = {trip} id= {id}/>
+            {/each}
+        </table>
+    {:else}
+        kut
+    {/if}
+    
   </div>
