@@ -1,4 +1,5 @@
 <script>
+	import {link} from 'svelte-spa-router'
 	// import { navigateTo } from 'svelte-router-spa'
 	// import { Navigate } from 'svelte-router-spa'
 	// logic goes here
@@ -13,10 +14,12 @@
 		
 			<td>	
 				{#if key == "_id"}
+					<a href="collector/{id}/trips/{trip[key]}" use:link>
 				<!-- <Navigate  to="/collector/{id}/trips/{trip[key]}"> -->
 					<button>
 						open
 					</button>
+				</a>
 				<!-- </Navigate> -->
 					
 				{:else}

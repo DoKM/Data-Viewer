@@ -1,5 +1,5 @@
 <script>
-	import {push, pop, replace} from 'svelte-spa-router'
+	import {link} from 'svelte-spa-router'
 	// import { navigateTo } from 'svelte-router-spa'
 	// import { Navigate } from 'svelte-router-spa'
 	// logic goes here
@@ -7,7 +7,7 @@
 	export let name;
 	export let owner;
 	export let description;
-	export let link = `/collector/{_id}`
+	// export let link = `/collector/{_id}`
 	
 </script>
 
