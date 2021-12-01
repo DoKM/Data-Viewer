@@ -32,7 +32,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use('/collector/', new Router(dbManagers.logger).getRouter());
 app.use('/trips/', new Router(dbManagers.trips).getRouter());
-
+app.use('/data/', new Router(dbManagers.data).getRouter());
 
 // console.log(app._router.stack)
 

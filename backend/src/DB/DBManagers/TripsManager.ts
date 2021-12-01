@@ -24,8 +24,8 @@ export class TripsManager extends DBManager {
         console.log(collection)
         console.log(req.body);
         let objectID = await this.db.create(`collector_${collection}`, req.body, res)
-        this.db.createCollection(`trip_${objectID}`, res)
-        res.send(`trip_${objectID}`)
+        this.db.createCollection(`c_${collection}_trip_${objectID}`, res)
+        res.send(`c_${collection}_t_${objectID}`)
     }
 
 }
