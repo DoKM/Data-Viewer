@@ -1,6 +1,6 @@
 <script>
 	// import { navigateTo } from 'svelte-router-spa'
-	import { Navigate } from 'svelte-router-spa'
+	// import { Navigate } from 'svelte-router-spa'
 	// logic goes here
 	export let trip;
 
@@ -13,11 +13,11 @@
 		
 			<td>	
 				{#if key == "_id"}
-				<Navigate  to="/trips/collector/{id}/trip/{trip[key]}">
+				<!-- <Navigate  to="/collector/{id}/trips/{trip[key]}"> -->
 					<button>
-						lmao
+						open
 					</button>
-				</Navigate>
+				<!-- </Navigate> -->
 					
 				{:else}
 					{trip[key]}

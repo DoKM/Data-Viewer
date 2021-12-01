@@ -18,7 +18,7 @@
 	} from "svelte";
 import TripsListItem from '../../Components/Collector/TripsListItem.svelte';
 
-    export let currentRoute
+    export let params = {}
 
     onMount(loadstuff)
 
@@ -40,7 +40,7 @@ import TripsListItem from '../../Components/Collector/TripsListItem.svelte';
         return new Promise((resolve, reject)=>{
             try {
             
-                axios.get(`/collector/id/${currentRoute.namedParams.id}`, { crossdomain: true })
+                axios.get(`/collector/id/${params.collector}`, { crossdomain: true })
 			    .then((res) => {
                     console.log(res)
 				    let collector = res.data;
@@ -64,7 +64,7 @@ import TripsListItem from '../../Components/Collector/TripsListItem.svelte';
     function loadTrips(){
         return new Promise((resolve, reject)=>{
             try{
-                axios.get(`/trips/collector/${currentRoute.namedParams.id}`, { crossdomain: true })
+                axios.get(`/trips/collector/${params.collector}`, { crossdomain: true })
 			    .then((res) => {
                     console.log(res.data)
                     trips = res.data
@@ -79,7 +79,7 @@ import TripsListItem from '../../Components/Collector/TripsListItem.svelte';
   </script>
   
   <div>
-    <h1 class="title is-4">ID of route/ {currentRoute.namedParams.id}</h1>
+    <!-- <h1 class="title is-4">ID of route/ {currentRoute.namedParams.collector}</h1> -->
     <h1 class="title is-4">ID / {id}</h1>
     <h1 class="title is-4">Name / {name}</h1>
     <h1 class="title is-4">Owner / {owner}</h1>

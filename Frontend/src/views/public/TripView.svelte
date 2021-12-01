@@ -1,25 +1,54 @@
 
 
 <script>
-import { onMount } from 'svelte';
+    import axios from "axios";
+
+    let url = window.location.href
+    
+    // axios.defaults.headers.common = {'X-Requested-With': 'XMLHttpRequest'}
+    axios.defaults.baseURL = 'http://localhost:3000'
+
+    import {
+		onMount
+	} from "svelte";
 
     import DashboardLayout from './../../Layout/DashboardLayout.svelte';
-    export let currentRoute;
-    export let id = currentRoute.namedParams.id;
-    export let collector = currentRoute.namedParams.collection;
+    import DataListItem from '../../Components/Collector/DataListItem.svelte';
+    // export let currentRoute;
+    // export let id = currentRoute.namedParams.trip;
+    // export let collector = currentRoute.namedParams.collection;
 
     export let readings = []
     
-    console.log(currentRoute.namedParams)
+    // console.log(currentRoute.namedParams)
 
-    onMount()
+    onMount(loadData)
 
     async function loadData(){
-        await loadData()
+        await loadReadings()
     }
 
-    async function loadReadings(){
 
+
+    async function loadReadings(){
+        return new Promise((resolve, reject)=>{
+            try {
+            
+                // axios.get(`/data/collector/${collector}/trip/${id}`, { crossdomain: true })
+			    // .then((res) => {
+                //     console.log(res.data)
+				//     readings = res.data
+                //     // console.log(description)
+                //     // console.log(collector)
+                //     // console.log(res)
+                //     resolve();
+			    // });
+            }catch (error) {
+                
+                console.log(error)
+                reject(error)
+            }
+        })
     }
 
 
@@ -35,8 +64,25 @@ import { onMount } from 'svelte';
 
 <div>
     test
-    {id}
+    {url}
+    <!-- {id}
     {collector}
     {currentRoute.namedParams.collection}
-    {currentRoute.namedParams.id}
+    {currentRoute.namedParams.id} -->
+    {#if readings.length >= 1}
+    <table>
+        <tr>
+            {#each Object.keys(readings[0]) as key}
+                <th>{key}</th>
+            {/each}
+        </tr>
+        <tr>
+            {#each readings as reading}
+                <DataListItem data={reading}/>
+            {/each}
+        </tr>
+    </table>
+    {:else}
+        Potato
+    {/if}
 </div>

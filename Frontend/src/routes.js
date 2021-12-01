@@ -4,17 +4,14 @@ import LunchMenuAdmin from './Views/admin/LunchMenuAdmin.svelte'
 import AdminLayout from './Views/admin/AdminLayout.svelte'
 import TripView from './Views/public/TripView.svelte'
 
-const routes = [
-  { name: '/', component: Home },
-  { name: '/collector/:id', component: CollectorView },
-  { name: '/trips/collector/:collection/trip/:id', component: TripView},
-  {
-    name: '/admin/manage-menus',
-    component: AdminLayout,
-    nestedRoutes: [
-      { name: 'index', component: LunchMenuAdmin },
-    ],
-  },
-]
+const routes = {
+  // Exact path
+  '/': Home,
+
+  // Using named parameters, with last being optional
+  '/collector/:collector': CollectorView,
+
+  '/collector/:collector/trips/:trip': TripView,
+}
 
 export { routes }

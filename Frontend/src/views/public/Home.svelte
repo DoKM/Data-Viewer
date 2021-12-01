@@ -17,20 +17,12 @@
     import {
 		onMount
 	} from "svelte";
-import AdminLayout from '../admin/AdminLayout.svelte';
-import App from '../../App.svelte';
-import LunchMenuAdmin from '../admin/LunchMenuAdmin.svelte';
 
 
-    let count = 30;
-    let name = "undefined"
+
+
 
     onMount(getCollectors);
-
-    function handleClick() {
-        getCollectors()
-        
-    }
 
     var collectorList = []
     
@@ -52,7 +44,7 @@ import LunchMenuAdmin from '../admin/LunchMenuAdmin.svelte';
 	};
     
 
-    export { count }
+    
 </script>
 
 <div>
@@ -61,7 +53,7 @@ import LunchMenuAdmin from '../admin/LunchMenuAdmin.svelte';
     <div>
         
         
-        <button id="button" on:click={handleClick}>Test {count}</button>
+        
         <div class="flex flex-wrap justify-center px-3">
         {#each collectorList as collector}
             <CollectorInfo {...collector}/>
