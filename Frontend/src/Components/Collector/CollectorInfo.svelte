@@ -24,6 +24,7 @@
 				<span>{owner}</span>
 			</div>
 			
+			
 			<span class="text-sm">
 				{description}
 			</span>

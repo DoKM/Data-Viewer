@@ -1,11 +1,3 @@
-<DashboardLayout header hideHeader headerHeight={56} let:scroller>
-    <div slot="header">
-      <div class="header" class:shadow={!!scroller.scroll}>
-              Page title
-          </div>
-    </div>
-</DashboardLayout>
-
 <script>
 	import DashboardLayout from './../../Layout/DashboardLayout.svelte';
 	import CollectorInfo from './../../Components/Collector/CollectorInfo.svelte';
@@ -46,6 +38,14 @@
 
     
 </script>
+
+<DashboardLayout header hideHeader headerHeight={56} let:scroller>
+    <div slot="header">
+      <div class="header" class:shadow={!!scroller.scroll}>
+              Page title
+          </div>
+    </div>
+</DashboardLayout>
 
 <div>
     

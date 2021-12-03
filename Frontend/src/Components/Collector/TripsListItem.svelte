@@ -7,6 +7,7 @@
 
 	export let id;
 	
+	
 </script>
 
 <tr>
@@ -14,7 +15,7 @@
 		
 			<td>	
 				{#if key == "_id"}
-					<a href="collector/{id}/trips/{trip[key]}" use:link>
+					<a href="/collector/{id}/trips/{trip[key]}" use:link>
 				<!-- <Navigate  to="/collector/{id}/trips/{trip[key]}"> -->
 					<button>
 						open

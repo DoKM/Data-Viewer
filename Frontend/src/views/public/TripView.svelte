@@ -14,11 +14,15 @@
 
     import DashboardLayout from './../../Layout/DashboardLayout.svelte';
     import DataListItem from '../../Components/Collector/DataListItem.svelte';
+    export let params = {}
     // export let currentRoute;
-    // export let id = currentRoute.namedParams.trip;
-    // export let collector = currentRoute.namedParams.collection;
-
+    
+    export let collector = params.collector;
+    export let id = params.trip;
     export let readings = []
+    
+    console.log(params)
+    
     
     // console.log(currentRoute.namedParams)
 
@@ -34,15 +38,15 @@
         return new Promise((resolve, reject)=>{
             try {
             
-                // axios.get(`/data/collector/${collector}/trip/${id}`, { crossdomain: true })
-			    // .then((res) => {
-                //     console.log(res.data)
-				//     readings = res.data
-                //     // console.log(description)
-                //     // console.log(collector)
-                //     // console.log(res)
-                //     resolve();
-			    // });
+                axios.get(`/data/collector/${collector}/trip/${id}`, { crossdomain: true })
+			    .then((res) => {
+                    console.log(res.data)
+				    readings = res.data
+                    // console.log(description)
+                    // console.log(collector)
+                    // console.log(res)
+                    resolve();
+			    });
             }catch (error) {
                 
                 console.log(error)
@@ -65,10 +69,10 @@
 <div>
     test
     {url}
-    <!-- {id}
+    
+    {id}
     {collector}
-    {currentRoute.namedParams.collection}
-    {currentRoute.namedParams.id} -->
+
     {#if readings.length >= 1}
     <table>
         <tr>
