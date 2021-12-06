@@ -4,9 +4,9 @@
 <nav class="bg-blue-900 shadow-lg">
     <div class="container mx-auto">
         <div class="sm:flex">
-            <!-- <Navigate to="/"> -->
-                <span class="p-3 text-3xl font-bold text-white">Home</span>
-            <!-- </Navigate> -->
+            
+            <span class="p-3 text-3xl font-bold text-white">Home</span>
+            
 
             <!-- Menus -->
             <div class="mt-4 ml-55">

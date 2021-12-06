@@ -8,6 +8,7 @@
 
 <script>
     import DashboardLayout from './../../Layout/DashboardLayout.svelte';
+    
     import axios from "axios";
     
     // axios.defaults.headers.common = {'X-Requested-With': 'XMLHttpRequest'}
@@ -77,33 +78,35 @@ import TripsListItem from '../../Components/Collector/TripsListItem.svelte';
         
     }
   </script>
-  
-  <div>
-    <!-- <h1 class="title is-4">ID of route/ {currentRoute.namedParams.collector}</h1> -->
-    <h1 class="title is-4">ID / {id}</h1>
-    <h1 class="title is-4">Name / {name}</h1>
-    <h1 class="title is-4">Owner / {owner}</h1>
-    <h1 class="title is-4">Description / {description}</h1>
-
-
-  </div>
-  <div>
-
-    {#if trips != undefined && trips.length >= 1}
-        <table>
-            <tr>
-                {#each Object.keys(trips[0]) as key}
-                    <th>
-                        {key}
-                    </th>
-                {/each}
-            </tr>
-            {#each trips as trip}
-                <TripsListItem trip = {trip} id= {id}/>
-            {/each}
-        </table>
-    {:else}
-        kut
-    {/if}
+  <div class="grid grid-cols-2 gap-4">
+    <div>
+        <!-- <h1 class="title is-4">ID of route/ {currentRoute.namedParams.collector}</h1> -->
+        <h1 class="title is-4">ID / {id}</h1>
+        <h1 class="title is-4">Name / {name}</h1>
+        <h1 class="title is-4">Owner / {owner}</h1>
+        <h1 class="title is-4">Description / {description}</h1>
     
+    
+      </div>
+      <div>
+        <div class="overflow-scroll">
+            {#if trips != undefined && trips.length >= 1}
+                <table>
+                    <tr>
+                        {#each Object.keys(trips[0]) as key}
+                            <th>
+                                {key}
+                            </th>
+                        {/each}
+                    </tr>
+                    {#each trips as trip}
+                        <TripsListItem trip = {trip} id= {id}/>
+                    {/each}
+                </table>
+            {:else}
+                kut
+            {/if}
+        </div>
+      </div>
   </div>
+  

@@ -14,7 +14,6 @@ export class DBManager{
     protected db: DatabaseInterface
 
     public get = async (req: Request, res: Response, next: NextFunction) => {
-        console.log("yo")
         let collection = req.params["collection"]?req.params["collection"]:"collectors"
         let result = await this.db.getAll(collection, res)
         res.send(result)

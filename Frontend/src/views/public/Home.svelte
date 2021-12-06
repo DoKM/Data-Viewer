@@ -1,6 +1,7 @@
 <script>
 	import DashboardLayout from './../../Layout/DashboardLayout.svelte';
 	import CollectorInfo from './../../Components/Collector/CollectorInfo.svelte';
+    import Modal from '../../Components/UI/Modal.svelte';
     import axios from "axios";
     
     // axios.defaults.headers.common = {'X-Requested-With': 'XMLHttpRequest'}
@@ -9,14 +10,23 @@
     import {
 		onMount
 	} from "svelte";
+    import App from '../../App.svelte';
+    import CollectorView from './CollectorView.svelte';
 
 
 
+    //Child Compontents
+    export let createWindow;
+
+    export const modalInfo = {
+
+    }
 
 
     onMount(getCollectors);
 
     var collectorList = []
+    
     
 
     function getCollectors() {
@@ -63,3 +73,11 @@
 
 
 </div>
+
+
+<div class="absolute bottom-0 right-0 px-6 py-3 m-5 font-bold text-white bg-blue-500 rounded-full" on:click={() => createWindow.show()}>Create</div>
+
+<Modal bind:this={createWindow}>
+    <span slot="title">Pjenis</span>
+    <span slot="content">stuff</span>
+</Modal>
