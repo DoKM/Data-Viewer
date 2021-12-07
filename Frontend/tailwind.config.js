@@ -5,7 +5,7 @@ module.exports = {
     removeDeprecatedGapUtilities: true,
   },
   plugins: [
-
+    require('@tailwindcss/forms'),
   ],
   darkMode: false, // or 'media' or 'class'
   theme: {

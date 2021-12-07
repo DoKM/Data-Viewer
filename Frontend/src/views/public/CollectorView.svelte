@@ -7,6 +7,7 @@
 </DashboardLayout>
 
 <script>
+	
     import DashboardLayout from './../../Layout/DashboardLayout.svelte';
     
     import axios from "axios";
@@ -17,7 +18,14 @@
     import {
 		onMount
 	} from "svelte";
-import TripsListItem from '../../Components/Collector/TripsListItem.svelte';
+    import TripsListItem from '../../Components/Collector/TripsListItem.svelte';
+    import Modal from '../../Components/UI/Modal.svelte';
+    
+    //Writeable stores
+    import { collector } from '../../Stores/Collector';
+    import { trip } from './../../Stores/Trip.js';
+    
+    
 
     export let params = {}
 
@@ -30,6 +38,8 @@ import TripsListItem from '../../Components/Collector/TripsListItem.svelte';
     export let description
 
     export let trips
+
+    export let createTripsWindow
 
 
     async function loadstuff(){
@@ -77,8 +87,28 @@ import TripsListItem from '../../Components/Collector/TripsListItem.svelte';
         })
         
     }
+
+    async function createTrip(){
+        
+        try{
+            axios.post(`/trips/collector/${params.collector}`, $trip ,{ crossdomain: true })
+			.then((res) => {
+                console.log(res.data)
+                loadTrips();
+                createTripsWindow.hide()    
+                
+            })
+        }catch(error){
+            reject(error)
+        }
+    
+    }
+
+    function editCollector(){
+
+    }
   </script>
-  <div class="grid grid-cols-2 gap-4">
+  <div class="grid h-full grid-cols-2 gap-4">
     <div>
         <!-- <h1 class="title is-4">ID of route/ {currentRoute.namedParams.collector}</h1> -->
         <h1 class="title is-4">ID / {id}</h1>
@@ -88,8 +118,8 @@ import TripsListItem from '../../Components/Collector/TripsListItem.svelte';
     
     
       </div>
-      <div>
-        <div class="overflow-scroll">
+      <div class="h-full">
+        <div class="h-full overflow-x-auto overflow-y-auto">
             {#if trips != undefined && trips.length >= 1}
                 <table>
                     <tr>
@@ -109,4 +139,56 @@ import TripsListItem from '../../Components/Collector/TripsListItem.svelte';
         </div>
       </div>
   </div>
+
+  <div class="fixed bottom-0 right-0 px-6 py-3 m-5 font-bold text-white bg-blue-500 rounded-full" on:click={() => createTripsWindow.show()}>Create</div>
+
+<Modal bind:this={createTripsWindow}>
+    <span slot="title">Create new Collector</span>
+    <span slot="content">
+        <div class="mb-6 md:flex md:items-center">
+            <div class="md:w-1/3">
+              <label class="block pr-4 mb-1 font-bold text-gray-500 md:text-right md:mb-0" for="inline-name">
+                Name
+              </label>
+            </div>
+            <div class="md:w-2/3">
+              <input bind:value={$trip.name} class="w-full px-4 py-2 leading-tight text-gray-700 border-2 border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-purple-500" id="inline-name" type="text" placeholder="Trip #">
+            </div>
+          </div>
+          <div class="mb-6 md:flex md:items-center">
+            <div class="md:w-1/3">
+              <label class="block pr-4 mb-1 font-bold text-gray-500 md:text-right md:mb-0" for="inline-date">
+                Date
+              </label>
+            </div>
+            <div class="md:w-2/3">
+              <input bind:value={$trip.date} class="w-full px-4 py-2 leading-tight text-gray-700 border-2 border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-purple-500" id="inline-date" type="datetime-local">
+            </div>
+          </div>
+          <div class="mb-6 md:flex md:items-center">
+            <div class="md:w-1/3">
+                <label class="block pr-4 mb-1 font-bold text-gray-500 md:text-right md:mb-0" for="inline-location">
+                  Location
+                </label>
+              </div>
+              <div class="md:w-2/3">
+                <input bind:value={$trip.location} class="w-full px-4 py-2 leading-tight text-gray-700 border-2 border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-purple-500" id="inline-location" type="text" placeholder="Location">
+              </div>
+          </div>
+
+          
+          
+          <div class="md:flex md:items-center">
+            <div class="md:w-1/3"></div>
+            <div class="md:w-2/3">
+              
+            </div>
+          </div>
+    </span>
+    <span slot="button">
+        <button type="button" on:click={()=>createTrip()} class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-green-500 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+            Create  
+        </button>
+    </span>
+</Modal>
   
