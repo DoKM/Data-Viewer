@@ -537,7 +537,7 @@ video {
   border-color: rgba(229, 231, 235, var(--tw-border-opacity));
 }
 
-[type='text'],[type='url'],[type='time'],textarea,select {
+[type='text'],[type='url'],[type='date'],[type='datetime-local'],[type='time'],textarea,select {
   -webkit-appearance: none;
      -moz-appearance: none;
           appearance: none;
@@ -554,7 +554,7 @@ video {
   --tw-shadow: 0 0 #0000;
 }
 
-[type='text']:focus, [type='url']:focus, [type='time']:focus, textarea:focus, select:focus {
+[type='text']:focus, [type='url']:focus, [type='date']:focus, [type='datetime-local']:focus, [type='time']:focus, textarea:focus, select:focus {
   outline: 2px solid transparent;
   outline-offset: 2px;
   --tw-ring-inset: var(--tw-empty,/*!*/ /*!*/);
@@ -873,16 +873,12 @@ select {
   overflow: hidden;
 }
 
+.overflow-x-auto {
+  overflow-x: auto;
+}
+
 .overflow-y-auto {
   overflow-y: auto;
-}
-
-.overflow-x-scroll {
-  overflow-x: scroll;
-}
-
-.overflow-y-scroll {
-  overflow-y: scroll;
 }
 
 .rounded {

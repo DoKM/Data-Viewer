@@ -15,7 +15,7 @@ export class DBManager{
 
     public get = async (req: Request, res: Response, next: NextFunction) => {
         let collection = req.params["collection"]?req.params["collection"]:"collectors"
-        let result = await this.db.getAll(collection, res)
+        let result = await this.db.getAll(collection)
         res.send(result)
     }
 
@@ -23,21 +23,36 @@ export class DBManager{
         let collection = req.params["collection"]?req.params["collection"]:"collectors"
         let id = req.params["id"]
         console.log(id)
-        let result = await this.db.getID(collection, id, res)
+        let result = await this.db.getID(collection, id)
         res.send(result)
     }
 
     public create = async (req: Request, res: Response, next:NextFunction)=>{
         let collection = req.params["collection"]?req.params["collection"]:"collectors"
         console.log(req.body);
-        let result = this.db.create(collection, req.body, res)
+        let result = this.db.create(collection, req.body)
         res.sendStatus(200).send(result)
     }
 
     public createMany = async (req:Request, res: Response, next:NextFunction) => {
         let collection = req.params["collection"]?req.params["collection"]:"collectors"
         console.log(req.body);
-        this.db.createMany(collection, req.body, res)
+        this.db.createMany(collection, req.body)
         res.sendStatus(200)
+    }
+
+    public update = async (req:Request, res: Response, next:NextFunction) => {
+        let collection = req.params["collection"]?req.params["collection"]:"collectors"
+        let id = req.params["id"]
+        console.log(req.body)
+        let result = this.db.update(id, collection, req.body)
+        console.log(result)
+        res.sendStatus(200)
+    }
+
+    public delete = async (req:Request, res: Response, next:NextFunction) => {
+        let collection = req.params["collection"]?req.params["collection"]:"collectors"
+        let id = req.params["id"]
+        // this.db.delete(id, collection)
     }
 }

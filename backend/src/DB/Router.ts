@@ -15,8 +15,9 @@ export class Router {
         this.router.get(`${this.prefix}/id/:id/`, this.dbmanager.getByID);
         this.router.post(`${this.prefix}/`, this.dbmanager.create);
         this.router.post(`${this.prefix}/arr/`, this.dbmanager.createMany)
-        // this.router.put(`${prefix}/id/:id`, this.dbmanager.updateCollector);
-        // this.router.delete(`${prefix}/id/:id`, this.dbmanager.deleteCollector);
+        this.router.put(`${this.prefix}/id/:id`, this.dbmanager.update);
+        this.router.patch(`${this.prefix}/id/:id`, this.dbmanager.update);
+        this.router.delete(`${this.prefix}/id/:id`, this.dbmanager.delete);
 
     }
     public getRouter(){

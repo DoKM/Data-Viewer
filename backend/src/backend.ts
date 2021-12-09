@@ -34,7 +34,7 @@ app.use('/collector/', new Router(dbManagers.logger).getRouter());
 app.use('/trips/', new Router(dbManagers.trips).getRouter());
 app.use('/data/', new Router(dbManagers.data).getRouter());
 
-// console.log(app._router.stack)
+
 
 const server = app.listen(3000, function() {
   console.log('Books backend running!');

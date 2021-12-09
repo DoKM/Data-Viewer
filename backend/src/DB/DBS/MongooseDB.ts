@@ -16,7 +16,7 @@ import { ObjectId } from "bson";
 export class MongooseDB implements DatabaseInterface {
     constructor() {
         this.mongoose = new Mongoose()
-        this.connect("simple-crud")
+        this.connect("DataCollectors")
     }
    
     private mongoose: Mongoose
@@ -24,9 +24,9 @@ export class MongooseDB implements DatabaseInterface {
     private async connect(urlPart: string): Promise < void > {
         let url = `mongodb://127.0.0.1:27017/${urlPart}`;
 
-        return await new Promise < void > ((resolve, reject) => {
+        await new Promise < void > ((resolve, reject) => {
             let tryAmount = 0;
-            const connectHandler = (url: string, tryAmount: number) => {
+            const connectHandler = () => {
                 this.mongoose.connect(url, (err: CallbackError) => {
                     if (err) {
                         tryAmount++;
@@ -41,9 +41,10 @@ export class MongooseDB implements DatabaseInterface {
                 });
             }
             this.mongoose.connection.on('open', () => {
+                // this.migrate();
                 resolve();
             })
-            connectHandler(url, tryAmount)
+            connectHandler()
         })
 
     }
@@ -53,12 +54,12 @@ export class MongooseDB implements DatabaseInterface {
 
     }
 
-    public getAll = async (collectionName: string, res:Response):Promise<string> => {
+    public getAll = async (collectionName: string):Promise<string> => {
         return new Promise < string > (async (resolve, reject) => {
 
             let collection = this.mongoose.connection.collection(collectionName)
         
-            await collection.find().toArray(function(err, results){
+            collection.find().toArray(function(err, results){
             
                 resolve(JSON.stringify(results))
             })
@@ -68,7 +69,7 @@ export class MongooseDB implements DatabaseInterface {
     }
 
     public getAllWith = async (location: JSON): Promise<void> => { return }
-    public getID = async (collectionName: string, id: string, res: Response): Promise<string> => { 
+    public getID = async (collectionName: string, id: string): Promise<string> => { 
     
         let collection = this.mongoose.connection.collection(collectionName)
         
@@ -81,7 +82,7 @@ export class MongooseDB implements DatabaseInterface {
     }
 
     public getFirst = async (location: JSON): Promise<void> => { return }
-    public create = async (collectionName: string, data:JSON, res: Response): Promise<string> => { 
+    public create = async (collectionName: string, data:JSON): Promise<string> => { 
 
         let collection = this.mongoose.connection.collection(collectionName)
         let document = await collection.insertOne(data)
@@ -89,7 +90,7 @@ export class MongooseDB implements DatabaseInterface {
         
     }
 
-    public createMany = async (collectionName:string, data: JSON[], res:Response) => {
+    public createMany = async (collectionName:string, data: JSON[]) => {
         let collection = this.mongoose.connection.collection(collectionName)
         
         collection.insertMany(data)
@@ -97,13 +98,26 @@ export class MongooseDB implements DatabaseInterface {
 
     public createWithReturn = async (location: JSON, jsonData: JSON): Promise<void> => { return }
 
-    public createCollection = async (collectionName: string, res:Response): Promise<void> => {
+    public createCollection = async (collectionName: string): Promise<void> => {
         await this.mongoose.connection.createCollection(collectionName);
     }
 
-    public update = async (id: string, location: JSON, jsonData: JSON): Promise<void> => { return }
+    public update = async (id: string, collectionName: string, data:JSON): Promise<void> => { 
+        let o_id = new ObjectId(id);
+        let result = this.mongoose.connection.collection(collectionName).updateOne({"_id": o_id}, { $set: data})
+        result.then((updateResult)=>{
+            console.log(updateResult)
+        })
+    }
     public updateWithReturn = async (id: string, location: JSON, jsonData: JSON): Promise<void> => { return }
-    public delete = async (id: string, location: JSON): Promise<void> => { return }
+    public delete = async (id: string, collectionName: string): Promise<void> => {
+        let o_id = new ObjectId(id);
+        this.mongoose.connection.collection(collectionName).findOneAndDelete({"_id": o_id})
+        return 
+    }
+    public dropCollection = async (collectionName:string): Promise<void> => {
+        this.mongoose.connection.dropCollection(collectionName);
+    }
     public createTable = async (type: JSON): Promise<void> => { return }
     public migrateTable = async (type: JSON, table: string): Promise<void> => { return }
     public resetDB = async (): Promise<void> => { return }

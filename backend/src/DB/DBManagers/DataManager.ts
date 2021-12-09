@@ -10,7 +10,7 @@ export class DataManager extends DBManager {
         let trip = req.params["trip"]?req.params["trip"]:"invalid"
         console.log(collection)
         console.log(trip)
-        let result = await this.db.getAll(`c_${collection}_t_${trip}`, res)
+        let result = await this.db.getAll(`c_${collection}_t_${trip}`)
         res.send(result)
     }
 }

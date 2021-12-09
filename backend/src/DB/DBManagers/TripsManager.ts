@@ -9,11 +9,10 @@ export class TripsManager extends DBManager {
     public prefix:string = "/collector/:collection"
 
     public get = async (req: Request, res: Response, next: NextFunction) => {
-        console.log("TESTSDADAWDAS")
+        
         let collection = req.params["collection"]?req.params["collection"]:"collectors"
-        console.log(collection)
-        console.log(req.params["collection"])
-        let result = await this.db.getAll(`collector_${collection}`, res)
+
+        let result = await this.db.getAll(`collector_${collection}`)
         res.send(result)
     }
 
@@ -21,10 +20,10 @@ export class TripsManager extends DBManager {
         // super.create(req, res, next)
         
         let collection = req.params["collection"]?req.params["collection"]:"collectors"
-        console.log(collection)
-        console.log(req.body);
-        let objectID = await this.db.create(`collector_${collection}`, req.body, res)
-        this.db.createCollection(`c_${collection}_trip_${objectID}`, res)
+
+        let objectID = await this.db.create(`collector_${collection}`, req.body)
+        this.db.createCollection(`c_${collection}_t_${objectID}_d`)
+        this.db.createCollection(`c_${collection}_t_${objectID}_g`)
         res.send(`c_${collection}_t_${objectID}`)
     }
 
