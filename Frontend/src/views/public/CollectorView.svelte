@@ -114,7 +114,7 @@
   async function deleteCollector(){
     try {
       axios.delete(`/collector/id/${params.collector}`, {crossdomain: true}).then((res)=>{
-        push(`/collector/`)
+        push(`/`)
 
 
       })
@@ -142,20 +142,30 @@
     <h1 class="title is-4">Description / {description}</h1>
     <button on:click={() => editCollectorWindow.show()}>edit</button>
   </div>
-  <div class="h-full">
+  <div class="h-full m-2">
     <div class="h-full overflow-x-auto overflow-y-auto">
       {#if trips != undefined && trips.length >= 1}
-        <table>
+        <table class="table-auto border-collapse w-full">
+          <thead class="bg-gray-50">
           <tr>
             {#each Object.keys(trips[0]) as key}
-              <th>
+              {#if key != "_id"}
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 {key}
               </th>
+              {/if}
+              
             {/each}
+            <th scope="col" class="relative px-6 py-3">
+              <span class="sr-only">Edit</span>
+            </th>
           </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
           {#each trips as trip}
             <TripsListItem {trip} {id} />
           {/each}
+        </tbody>
         </table>
       {:else}
         kut
