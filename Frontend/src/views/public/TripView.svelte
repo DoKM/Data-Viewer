@@ -1,6 +1,7 @@
 
 
 <script>
+	import AddData from './../../Components/Collector/AddData.svelte';
 	import Modal from './../../Components/UI/Modal.svelte';
     import axios from "axios";
 
@@ -89,10 +90,6 @@
 <div class="grid h-full grid-cols-2 gap-4">
 <div>
     <span class="font-bold ">Graphs should go here WIP</span>
-    {url}
-    
-    {id}
-    {collector}
 
     
 </div>
@@ -130,7 +127,9 @@
 
 
 <Modal bind:this={addDataWindow}>
-
+    <span slot="content">
+        <AddData></AddData>
+    </span>
 </Modal>
 
 <Modal bind:this={editTripWindow}>
