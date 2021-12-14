@@ -3,12 +3,7 @@
 <script>
 	import AddData from './../../Components/Collector/AddData.svelte';
 	import Modal from './../../Components/UI/Modal.svelte';
-    import axios from "axios";
-
-    let url = window.location.href
-    
-    // axios.defaults.headers.common = {'X-Requested-With': 'XMLHttpRequest'}
-    axios.defaults.baseURL = 'http://localhost:3000'
+	import API from './../../Services/Api.js';
 
     import {
 		onMount
@@ -40,8 +35,8 @@
     async function loadTrip(){
         return new Promise((resolve, reject) => {
             try {
-                axios.get(`/trip/collector/${collector}/trip/${id}`, { crossdomain: true }).then((res)=>{
-                    console.log(res.data)
+                API.get(`/trips/collector/${collector}/id/${id}`).then((res)=>{
+                    console.log(res)
                 })
             } catch (error){
                 reject(error)
@@ -55,10 +50,10 @@
         return new Promise((resolve, reject)=>{
             try {
             
-                axios.get(`/data/collector/${collector}/trip/${id}`, { crossdomain: true })
+                API.get(`/data/collector/${collector}/trip/${id}`)
 			    .then((res) => {
-                    console.log(res.data)
-				    readings = res.data
+                    console.log(res)
+				    readings = res
                     // console.log(description)
                     // console.log(collector)
                     // console.log(res)
@@ -73,6 +68,7 @@
     }
 
     export let addDataWindow
+    export let addDataFunc
     export let editTripWindow
     export let addGraphWindow
     
@@ -128,8 +124,18 @@
 
 <Modal bind:this={addDataWindow}>
     <span slot="content">
-        <AddData></AddData>
+        <AddData bind:this={addDataFunc} params={params}></AddData>
     </span>
+    <span slot="button">
+        <button
+          type="button"
+          on:click={() => addDataFunc.post()}
+          class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-green-500 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm"
+        >
+          Edit
+        </button>
+      </span>
+    
 </Modal>
 
 <Modal bind:this={editTripWindow}>

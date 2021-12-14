@@ -18,7 +18,11 @@ export class Router {
         this.router.put(`${this.prefix}/id/:id`, this.dbmanager.update);
         this.router.patch(`${this.prefix}/id/:id`, this.dbmanager.update);
         this.router.delete(`${this.prefix}/id/:id`, this.dbmanager.delete);
-
+        if(this.prefix != ""){
+            console.log(this.prefix)
+            this.router.use(Morgan('combined'))
+            console.log(this.router.stack)
+        }
     }
     public getRouter(){
         return this.router;

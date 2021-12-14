@@ -1,6 +1,5 @@
 import express from "express";
 
-// import Morgan from 'morgan';
 
 const app = express();
 const bodyParser = require('body-parser');
@@ -26,6 +25,7 @@ console.log('Start migrations');
 // dbManager.migrate();
 
 
+import Morgan from 'morgan';
 // app.use(Morgan('combined'))
 
 app.use(cors());
@@ -33,6 +33,8 @@ app.use(bodyParser.json());
 app.use('/collector/', new Router(dbManagers.logger).getRouter());
 app.use('/trips/', new Router(dbManagers.trips).getRouter());
 app.use('/data/', new Router(dbManagers.data).getRouter());
+
+
 
 
 

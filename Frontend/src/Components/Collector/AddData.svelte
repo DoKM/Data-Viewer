@@ -1,4 +1,9 @@
 <script>
+	import API from './../../Services/Api.js';
+    import {push, pop, replace} from 'svelte-spa-router'
+
+    export let params = {}
+
     export let colums = ["test", "test", "test"]
     export let rows = [[]]
 
@@ -10,7 +15,11 @@
         rows = [...rows, []]
     }
     function checkIfDupeName(index, array){
+        if(array[index] == ""){
+            return true;
+        }
         for(let i = 0; i < array.length; i++){
+            
             if(i != index && array[i] === array[index]){
                 return true
             }
@@ -28,7 +37,7 @@
             }
             data.push(object)
         })
-        console.log(data)
+        return data
     }
 
     function deleteColumn(i){
@@ -37,10 +46,29 @@
             rows[index] = [...rows[index].slice(0, i), ...rows[index].slice(i + 1)]
         }
     }
+
+    function validateKeys(){
+        for(let i = 0; i < colums.length; i++){
+            if(checkIfDupeName(i, colums)){
+                return false
+            }
+        }
+        return true
+    }
+
+    export function post(){
+        if(validateKeys()){
+            let data = gatherInfo()
+            console.log(data)
+            API.post(`/data/collector/${params.collector}/trip/${params.trip}`, data)
+        }
+        
+    }
+
+    
+
 </script>
-<div>
-    {colums}
-</div>
+
 <div class="overflow-x-auto overflow-y-auto">
 
     <table class="table-auto border-collapse w-full">
@@ -55,8 +83,8 @@
             <tr>
                 {#each colums as colum, index}
                   
-                  <th scope="col" class="text-left text-xs font-medium {checkIfDupeName(index, colums)?"text-red-500":"text-gray-500"} uppercase tracking-wider">
-                    <input class="p-0" bind:value={colums[index]} type="text">
+                  <th scope="col" class="text-left text-xs font-medium rounded  {checkIfDupeName(index, colums)?"border-2 bg-red-300 border-rose-500 text-red-500":"text-gray-500"} uppercase tracking-wider">
+                    <input class="p-0 bg-transparent outline-none border-none" bind:value={colums[index]} type="text">
                   </th>
                   
                   
@@ -70,7 +98,7 @@
             <tr>
                 {#each colums as colum, index2}
                 <td class="whitespace-nowrap text-sm bg-gray-100 text-gray-600">
-                    <input class="p-0" type="text" bind:value={rows[index][index2]}>
+                    <input class="p-0 bg-transparent outline-none border-none" type="text" bind:value={rows[index][index2]}>
                 </td>
                 {/each}
             </tr>

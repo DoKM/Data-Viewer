@@ -5,10 +5,7 @@
 
   import { collector } from '../../Stores/Collector';
 
-	import axios from "axios";
-
-	// axios.defaults.headers.common = {'X-Requested-With': 'XMLHttpRequest'}
-	axios.defaults.baseURL = 'http://localhost:3000'
+	import API from './../../Services/Api.js';
 
 	import {
 	  onMount
@@ -33,11 +30,9 @@
 	function getCollectors() {
 	  try {
 
-	    axios.get(`/collector`, {
-	        crossdomain: true
-	      })
+	    API.get(`/collector`)
 	      .then((res) => {
-	        collectorList = res.data;
+	        collectorList = res;
 	        console.log(res)
 
 	        // name = "pjenis"
@@ -50,10 +45,7 @@
   function createCollector(){
     console.log($collector)
     try {
-      axios.post(`/collector`,$collector, {
-	        crossdomain: true
-          
-	      })
+      API.post(`/collector`,$collector)
 	      .then((res) => {
 	        
 	        console.log(res)

@@ -6,11 +6,27 @@ export class DataManager extends DBManager {
 
     public get = async (req: Request, res: Response, next: NextFunction) => {
         console.log("hit")
-        let collection = req.params["collection"]?req.params["collection"]:"collectors"
-        let trip = req.params["trip"]?req.params["trip"]:"invalid"
-        console.log(collection)
+        let collector = req.params["collection"]
+        let trip = req.params["trip"]
+        if(trip == undefined || collector == undefined){
+            res.sendStatus(400)
+            return;
+        }
+        console.log(collector)
         console.log(trip)
-        let result = await this.db.getAll(`c_${collection}_t_${trip}`)
+        let result = await this.db.getAll(`c_${collector}_t_${trip}_d`)
         res.send(result)
+    }
+
+    public create = async (req:Request, res:Response, next:NextFunction) => {
+        let collector = req.params["collection"]
+        let trip = req.params["trip"]
+        if(trip == undefined || collector == undefined){
+            res.sendStatus(400)
+            return;
+        }
+        this.db.createMany(`c_${collector}_t_${trip}_d`, req.body)
+        console.log(req.body)
+        res.sendStatus(200);
     }
 }

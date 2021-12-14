@@ -1,10 +1,7 @@
 <script>
   import DashboardLayout from "./../../Layout/DashboardLayout.svelte";
   import {push, pop, replace} from 'svelte-spa-router'
-  import axios from "axios";
-
-  // axios.defaults.headers.common = {'X-Requested-With': 'XMLHttpRequest'}
-  axios.defaults.baseURL = "http://localhost:3000";
+	import API from './../../Services/Api.js';
 
   import { onMount } from "svelte";
   import TripsListItem from "../../Components/Collector/TripsListItem.svelte";
@@ -38,15 +35,15 @@
 
     return new Promise((resolve, reject) => {
       try {
-        axios
-          .get(`/collector/id/${params.collector}`, { crossdomain: true })
+        API
+          .get(`/collector/id/${params.collector}`)
           .then((res) => {
             console.log(res);
-            let collector = res.data;
-            name = collector.name;
-            owner = collector.owner;
-            id = collector._id;
-            description = collector.description;
+
+            name = res.name;
+            owner = res.owner;
+            id = res._id;
+            description = res.description;
             // console.log(description)
             // console.log(collector)
             // console.log(res)
@@ -62,11 +59,11 @@
   function loadTrips() {
     return new Promise((resolve, reject) => {
       try {
-        axios
-          .get(`/trips/collector/${params.collector}`, { crossdomain: true })
+        API
+          .get(`/trips/collector/${params.collector}`)
           .then((res) => {
-            console.log(res.data);
-            trips = res.data;
+            console.log(res);
+            trips = res;
             resolve();
           });
       } catch (error) {
@@ -77,10 +74,8 @@
 
   async function createTrip() {
     try {
-      axios
-        .post(`/trips/collector/${params.collector}`, $trip, {
-          crossdomain: true,
-        })
+      API
+        .post(`/trips/collector/${params.collector}`, $trip)
         .then((res) => {
           console.log(res.data);
           loadTrips();
@@ -93,10 +88,8 @@
 
   async function editCollector() {
     try {
-      axios
-        .put(`/collector/id/${params.collector}`, $collector, {
-          crossdomain: true,
-        })
+      API
+        .put(`/collector/id/${params.collector}`, $collector)
         .then((res) => {
           console.log("yes");
           console.log(res.data);
@@ -113,7 +106,7 @@
 
   async function deleteCollector(){
     try {
-      axios.delete(`/collector/id/${params.collector}`, {crossdomain: true}).then((res)=>{
+      API.delete(`/collector/id/${params.collector}`).then((res)=>{
         push(`/`)
 
 
