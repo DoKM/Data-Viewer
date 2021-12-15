@@ -9,6 +9,7 @@
   import DashboardLayout from "./../../Layout/DashboardLayout.svelte";
   import DataListItem from "../../Components/Collector/DataListItem.svelte";
   import { trip } from "../../Stores/Trip";
+import EditData from "../../Components/Collector/EditData.svelte";
 
   export let params = {};
   // export let currentRoute;
@@ -76,14 +77,20 @@
       ...items.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','))
       ].join('\r\n')
     console.log(csv)
-    saveAs(new Blob([...csv], {type: "text/plain;charset=utf-8"}), "data.csv")
+    saveAs(new Blob([csv], {type: "text/plain;charset=utf-8"}), "data.csv")
 
+  }
+
+  function editData(index){
+    console.log(index)
   }
 
 
 
   export let addDataWindow;
   export let addDataFunc;
+  export let editDataWindow;
+  export let editDataFunc;
   export let editTripWindow;
   export let addGraphWindow;
 
@@ -102,20 +109,28 @@
   <div class="h-full m-2">
     {#if readings.length >= 1}
     <button on:click={()=>exportToCSV()}>Download as CSV</button>
-      <table>
+      <table class="table-auto border-collapse w-full">
+        <thead class="bg-gray-50">
         <tr>
           {#each columns as key}
             {#if key != "_id"}
-              <th>{key}</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{key}</th>
             {/if}
           {/each}
+          <th scope="col" class="relative px-6 py-3">
+            <span class="sr-only">Edit</span>
+          </th>
         </tr>
+        
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
 
-          {#each readings as reading}
+          {#each readings as reading, index}
            
             
-            <DataListItem data={reading} columns={columns} />
+            <DataListItem data={reading} columns={columns} parent={this} {index}/>
           {/each}
+        </tbody>
 
       </table>
     {/if}
@@ -141,7 +156,7 @@
 
 <Modal bind:this={addDataWindow}>
   <span slot="content">
-    <AddData bind:this={addDataFunc} params={params} />
+    <AddData bind:this={addDataFunc} params={params} colums={columns} />
   </span>
   <span slot="button">
     <button
@@ -151,6 +166,11 @@
     >
       Edit
     </button>
+  </span>
+</Modal>
+<Modal bind:this={editDataWindow}>
+  <span slot="content">
+    <EditData bind:this={editDataFunc} params={params} colums={columns} editDataFunc={(index)=>editData(index)} />
   </span>
 </Modal>
 
