@@ -5,6 +5,10 @@
     export let params = {}
 
     export let colums = ["test", "test", "test"]
+    $: {
+        let index = colums.indexOf("_id")
+        deleteColumn(index)
+    }
     export let rows = [[]]
 
     function newColum(){
@@ -46,6 +50,9 @@
             rows[index] = [...rows[index].slice(0, i), ...rows[index].slice(i + 1)]
         }
     }
+    function deleteRow(index){
+        rows = [...rows.slice(0, index), ...rows.slice(index + 1)]
+    }
 
     function validateKeys(){
         for(let i = 0; i < colums.length; i++){
@@ -75,20 +82,30 @@
         <thead class="bg-gray-50">
             <tr>
                 {#each colums as colum, index}
-                    <th scope="col" class="text-left text-xs font-medium text-red-500 uppercase tracking-wider">
+                    {#if colum != "_id"}
+                    <th scope="col" class="text-left text-xs font-medium text-red-500 uppercase tracking-wider text-center">
                         <button on:click={()=> deleteColumn(index)}>X</button>
                     </th>
+                    {/if}
                 {/each}
+                <th scope="col" class="relative px-6 py-3">
+                    <span class="sr-only">Edit</span>
+                  </th>
             </tr>
+            
             <tr>
                 {#each colums as colum, index}
-                  
-                  <th scope="col" class="text-left text-xs font-medium rounded  {checkIfDupeName(index, colums)?"border-2 bg-red-300 border-rose-500 text-red-500":"text-gray-500"} uppercase tracking-wider">
-                    <input class="p-0 bg-transparent outline-none border-none" bind:value={colums[index]} type="text">
-                  </th>
+                    {#if colum != "_id"}
+                    <th scope="col" class="text-left text-xs font-medium rounded  {checkIfDupeName(index, colums)?"border-2 bg-red-300 border-rose-500 text-red-500":"text-gray-500"} uppercase tracking-wider">
+                        <input class="p-0 bg-transparent outline-none border-none" bind:value={colums[index]} type="text">
+                    </th>
+                  {/if}
                   
                   
                 {/each}
+                <th scope="col" class="relative px-6 py-3">
+                    <span class="sr-only">Edit</span>
+                  </th>
                 
             </tr>
         </thead>
@@ -97,10 +114,15 @@
             {#each rows as row, index}
             <tr>
                 {#each colums as colum, index2}
+                {#if colum != "_id"}
                 <td class="whitespace-nowrap text-sm bg-gray-100 text-gray-600">
                     <input class="p-0 bg-transparent outline-none border-none" type="text" bind:value={rows[index][index2]}>
                 </td>
+                {/if}
                 {/each}
+                <td class="px-6 whitespace-nowrap bg-gray-200 text-right text-red-500 text-sm font-medium">
+                    <button on:click={()=> deleteRow(index)}>X</button>
+                </td>
             </tr>
             {/each}
             

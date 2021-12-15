@@ -1,11 +1,16 @@
 <script>
-    import { each } from "svelte/internal";
+
 
     export let data
+    export let columns = []
+    $: console.log(data)
 </script>
 
 <tr>
-    {#each Object.keys(data) as key}
-        <td>{data[key]}</td>
+    
+    {#each columns as key}
+        {#if key != "_id"}
+            <td>{data[key]?data[key]:""}</td>
+        {/if}
     {/each}
 </tr>
