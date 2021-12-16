@@ -6,7 +6,8 @@
     export let index
     
 
-    export let editDataFunc = (index) => {}
+    export let editData = (index) => {}
+    console.log(editData)
 </script>
 
 <tr>
@@ -17,6 +18,6 @@
         {/if}
     {/each}
     <td class="px-6 py-4 whitespace-nowrap bg-gray-200 text-right text-sm font-medium">
-		<button on:click={()=> {console.log(index);editDataFunc(index)}}>edit</button>
+		<button on:click={()=> editData(index)}>edit</button>
 	</td>
 </tr>

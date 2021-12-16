@@ -5,11 +5,16 @@
     export let params = {}
 
     export let colums = ["test", "test", "test"]
+    export let reading = {}
     export let row = []
+
 
     export let dataId = "";
 
     $: {
+        if(reading!= null){
+            dataId = reading["_id"]
+        }
         if(colums.includes("_id")){
             let index = colums.indexOf("_id")
             deleteColumn(index)
@@ -17,9 +22,15 @@
         if(colums.length == 0){
             colums = ["new"]
         }
+        
     }
+    {
+        row = []
+        for(let i = 0; i < colums.length; i++){
+            row[i] = reading[colums[i]]
+        }
 
-
+    }
     function newColum(){
         colums = [...colums, `new ${colums.length+1}`];
     }
@@ -52,7 +63,7 @@
 
     function deleteColumn(i){
         colums = [...colums.slice(0, i), ...colums.slice(i + 1)];
-        
+        console.log(row)
         row = [...row.slice(0, i), ...row.slice(i + 1)]
         
     }
@@ -67,15 +78,24 @@
         return true
     }
 
-    export function post(){
+    export function update(){
         if(validateKeys()){
             let data = gatherInfo()
             console.log(data)
-            API.post(`/data/collector/${params.collector}/trip/${params.trip}/id/${dataId}`, data)
+            API.put(`/data/collector/${params.collector}/trip/${params.trip}/id/${dataId}`, data)
+            editDataWindow.hide()
+            reload()
         }
         
     }
 
+    export function deleteData(){
+        API.delete(`/data/collector/${params.collector}/trip/${params.trip}/id/${dataId}`)
+        editDataWindow.hide()
+        reload()
+    }
+    export let editDataWindow;
+    export let reload = () => {}
     
 
 </script>
@@ -115,7 +135,7 @@
                 {#each colums as colum, index}
                     {#if colum != "_id"}
                         <td class="whitespace-nowrap text-sm bg-gray-100 text-gray-600">
-                            <input class="p-0 bg-transparent outline-none border-none" type="text" bind:value={row[index]}>
+                            <input class="p-0 bg-transparent outline-none border-none" type="number" bind:value={row[index]}>
                         </td>
                     {/if}
                 {/each}

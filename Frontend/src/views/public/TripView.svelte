@@ -2,14 +2,15 @@
   import AddData from "./../../Components/Collector/AddData.svelte";
   import Modal from "./../../Components/UI/Modal.svelte";
   import API from "./../../Services/Api.js";
-  import { saveAs } from 'file-saver';
+  import { saveAs } from "file-saver";
 
   import { onMount } from "svelte";
 
   import DashboardLayout from "./../../Layout/DashboardLayout.svelte";
   import DataListItem from "../../Components/Collector/DataListItem.svelte";
   import { trip } from "../../Stores/Trip";
-import EditData from "../../Components/Collector/EditData.svelte";
+  import EditData from "../../Components/Collector/EditData.svelte";
+  import Graph from "../../Components/UI/Graph.svelte";
 
   export let params = {};
   // export let currentRoute;
@@ -17,6 +18,8 @@ import EditData from "../../Components/Collector/EditData.svelte";
   export let collector = params.collector;
   export let id = params.trip;
   export let readings = [];
+  export let columns = [];
+  export let sortedReadings = {};
 
   console.log(params);
 
@@ -49,16 +52,32 @@ import EditData from "../../Components/Collector/EditData.svelte";
           // console.log(description)
           // console.log(collector)
           // console.log(res)
-          columns = []
-          res.forEach(reading => {
-            Object.keys(reading).forEach(key => {
-              if(!columns.includes(key)){
-                columns = [...columns, key]
+          columns = [];
+          res.forEach((reading) => {
+            Object.keys(reading).forEach((key) => {
+              if (!columns.includes(key)) {
+                columns = [...columns, key];
               }
-            })
+            });
           });
           readings = res;
-          console.log(columns)
+          sortedReadings = {};
+          for(let i =0; i<columns.length; i++){
+            for(let ii =0; ii<readings.length; ii++){
+              let numberValue
+              try{
+                numberValue = parseInt(readings[ii][columns[i]])
+                if(numberValue == NaN){
+                  numberValue = 0
+                }
+              } catch(error) {
+                numberValue = 0
+              }
+              sortedReadings[columns[i]] = [...sortedReadings[columns[i]]||[], numberValue] 
+            }
+          }
+          console.log(sortedReadings);
+          console.log(columns);
           resolve();
         });
       } catch (error) {
@@ -68,24 +87,29 @@ import EditData from "../../Components/Collector/EditData.svelte";
     });
   }
 
-  function exportToCSV(){
-    const items = readings
-    const replacer = (key, value) => value === null ? '' : value // specify how you want to handle null values here
-    const header = Object.keys(items[0])
+  function exportToCSV() {
+    const items = readings;
+    const replacer = (key, value) => (value === null ? "" : value); // specify how you want to handle null values here
+    const header = Object.keys(items[0]);
     const csv = [
-      header.join(','), // header row first
-      ...items.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','))
-      ].join('\r\n')
-    console.log(csv)
-    saveAs(new Blob([csv], {type: "text/plain;charset=utf-8"}), "data.csv")
-
+      header.join(","), // header row first
+      ...items.map((row) =>
+        header
+          .map((fieldName) => JSON.stringify(row[fieldName], replacer))
+          .join(",")
+      ),
+    ].join("\r\n");
+    console.log(csv);
+    saveAs(new Blob([csv], { type: "text/plain;charset=utf-8" }), "data.csv");
   }
 
-  function editData(index){
-    console.log(index)
+  function editData(index) {
+    editDataWindow.show();
+
+    row = readings[index];
   }
 
-
+  export let row;
 
   export let addDataWindow;
   export let addDataFunc;
@@ -93,8 +117,6 @@ import EditData from "../../Components/Collector/EditData.svelte";
   export let editDataFunc;
   export let editTripWindow;
   export let addGraphWindow;
-
-  export let columns = [];
 </script>
 
 <DashboardLayout header hideHeader headerHeight={56} let:scroller>
@@ -105,33 +127,33 @@ import EditData from "../../Components/Collector/EditData.svelte";
 <div class="grid h-full grid-cols-2 gap-4">
   <div>
     <span class="font-bold ">Graphs should go here WIP</span>
+    <Graph datastuff={[sortedReadings["x"], sortedReadings["y"]]}/>
   </div>
   <div class="h-full m-2">
     {#if readings.length >= 1}
-    <button on:click={()=>exportToCSV()}>Download as CSV</button>
+      <button on:click={() => exportToCSV()}>Download as CSV</button>
       <table class="table-auto border-collapse w-full">
         <thead class="bg-gray-50">
-        <tr>
-          {#each columns as key}
-            {#if key != "_id"}
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{key}</th>
-            {/if}
-          {/each}
-          <th scope="col" class="relative px-6 py-3">
-            <span class="sr-only">Edit</span>
-          </th>
-        </tr>
-        
-      </thead>
-      <tbody class="bg-white divide-y divide-gray-200">
-
+          <tr>
+            {#each columns as key}
+              {#if key != "_id"}
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >{key}</th
+                >
+              {/if}
+            {/each}
+            <th scope="col" class="relative px-6 py-3">
+              <span class="sr-only">Edit</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
           {#each readings as reading, index}
-           
-            
-            <DataListItem data={reading} columns={columns} parent={this} {index}/>
+            <DataListItem data={reading} {columns} {editData} {index} />
           {/each}
         </tbody>
-
       </table>
     {/if}
   </div>
@@ -156,7 +178,13 @@ import EditData from "../../Components/Collector/EditData.svelte";
 
 <Modal bind:this={addDataWindow}>
   <span slot="content">
-    <AddData bind:this={addDataFunc} params={params} colums={columns} />
+    <AddData
+      bind:this={addDataFunc}
+      {params}
+      colums={columns}
+      reload={loadReadings}
+      {addDataWindow}
+    />
   </span>
   <span slot="button">
     <button
@@ -164,13 +192,37 @@ import EditData from "../../Components/Collector/EditData.svelte";
       on:click={() => addDataFunc.post()}
       class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-green-500 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm"
     >
-      Edit
+      Create
     </button>
   </span>
 </Modal>
 <Modal bind:this={editDataWindow}>
   <span slot="content">
-    <EditData bind:this={editDataFunc} params={params} colums={columns} editDataFunc={(index)=>editData(index)} />
+    <EditData
+      bind:this={editDataFunc}
+      {params}
+      colums={columns}
+      reading={row}
+      {editData}
+      reload={loadReadings}
+      {editDataWindow}
+    />
+  </span>
+  <span slot="button">
+    <button
+      type="button"
+      on:click={() => editDataFunc.deleteData()}
+      class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-500 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+    >
+      Delete
+    </button>
+    <button
+      type="button"
+      on:click={() => editDataFunc.update()}
+      class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-green-500 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm"
+    >
+      Edit
+    </button>
   </span>
 </Modal>
 

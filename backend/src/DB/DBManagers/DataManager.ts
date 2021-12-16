@@ -29,4 +29,29 @@ export class DataManager extends DBManager {
         console.log(req.body)
         res.sendStatus(200);
     }
+
+    public update = async (req:Request, res:Response, next:NextFunction) => {
+        let collector = req.params["collection"]
+        let trip = req.params["trip"]
+        let id = req.params["id"]
+        if(trip == undefined || collector == undefined || id == undefined){
+            res.sendStatus(400)
+            return;
+        }
+
+        this.db.update(id, `c_${collector}_t_${trip}_d`, req.body)
+        res.sendStatus(200)
+    }
+
+    public delete = async (req:Request, res:Response, next:NextFunction) => {
+        let collector = req.params["collection"]
+        let trip = req.params["trip"]
+        let id = req.params["id"]
+        if(trip == undefined || collector == undefined || id == undefined){
+            res.sendStatus(400)
+            return;
+        }
+        this.db.delete(id, `c_${collector}_t_${trip}_d`)
+        res.sendStatus(200)
+    }
 }

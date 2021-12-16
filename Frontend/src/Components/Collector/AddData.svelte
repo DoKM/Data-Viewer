@@ -75,9 +75,14 @@
             let data = gatherInfo()
             console.log(data)
             API.post(`/data/collector/${params.collector}/trip/${params.trip}`, data)
+            reload()
+            addDataWindow.hide()
         }
         
     }
+
+    export let addDataWindow;
+    export let reload = () => {}
 
     
 
@@ -123,7 +128,7 @@
                 {#each colums as colum, index2}
                 {#if colum != "_id"}
                 <td class="whitespace-nowrap text-sm bg-gray-100 text-gray-600">
-                    <input class="p-0 bg-transparent outline-none border-none" type="text" bind:value={rows[index][index2]}>
+                    <input class="p-0 bg-transparent outline-none border-none" type="number" bind:value={rows[index][index2]}>
                 </td>
                 {/if}
                 {/each}
