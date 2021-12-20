@@ -1,71 +1,77 @@
 <script>
-    import Line from "svelte-chartjs/src/Line.svelte"
-    export let datastuff = []
-    $: console.log(datastuff)
+  import { library } from "@fortawesome/fontawesome-svg-core";
+  import {
+    faBackward,
+    faFastBackward,
+    faFastForward,
+    faForward,
+  } from "@fortawesome/free-solid-svg-icons";
+  import {
+    FontAwesomeIcon,
+    FontAwesomeLayers,
+    FontAwesomeLayersText,
+  } from "fontawesome-svelte";
 
-    export let dataLine;
-    export let labels = []
-    // {
-    //     if(datastuff.length != 0){
-    //         labels = []
-    //         for(let i =0; i< datastuff[0].length;i++){
-    //             labels[i] = i
-    //         }
-    //     }
-    // }
+  library.add(faBackward, faFastBackward, faForward, faFastForward);
 
-    $: {
-        
-        
+  import LineGraph from "./Graphs/LineGraph.svelte";
+  export let data = [];
 
-        dataLine = {
-    labels: [1,2,3,4,5,6,7,8,9,10],
-    datasets: [
-      {
-        label: "My First dataset",
-        fill: true,
-        lineTension: 0.3,
-        backgroundColor: "rgba(225, 204,230, .3)",
-        borderColor: "rgb(205, 130, 158)",
-        borderCapStyle: "butt",
-        borderDash: [],
-        borderDashOffset: 0.0,
-        borderJoinStyle: "miter",
-        pointBorderColor: "rgb(205, 130,1 58)",
-        pointBackgroundColor: "rgb(255, 255, 255)",
-        pointBorderWidth: 10,
-        pointHoverRadius: 5,
-        pointHoverBackgroundColor: "rgb(0, 0, 0)",
-        pointHoverBorderColor: "rgba(220, 220, 220,1)",
-        pointHoverBorderWidth: 2,
-        pointRadius: 1,
-        pointHitRadius: 10,
-        data: datastuff[0]
-      },
-      {
-        label: "My Second dataset",
-        fill: true,
-        lineTension: 0.3,
-        backgroundColor: "rgba(184, 185, 210, .3)",
-        borderColor: "rgb(35, 26, 136)",
-        borderCapStyle: "butt",
-        borderDash: [],
-        borderDashOffset: 0.0,
-        borderJoinStyle: "miter",
-        pointBorderColor: "rgb(35, 26, 136)",
-        pointBackgroundColor: "rgb(255, 255, 255)",
-        pointBorderWidth: 10,
-        pointHoverRadius: 5,
-        pointHoverBackgroundColor: "rgb(0, 0, 0)",
-        pointHoverBorderColor: "rgba(220, 220, 220, 1)",
-        pointHoverBorderWidth: 2,
-        pointRadius: 1,
-        pointHitRadius: 10,
-        data: datastuff[1]
-      }
-    ]
+
+
+  export let labels = [];
+
+  export let graphData = {}
+
+  export let indexes = 10
+
+  
+  function fastBackward(){
+    graph.currentPos = 0;
   }
+
+  function backward(){
+    if(graph.currentPos <= 0 || (data == undefined && data[0] == undefined)){
+      graph.currentPos =0
+    } else if(graph.currentPos > data[0].length-indexes){
+      graph.currentPos = data[0].length-indexes
+    } else {
+      graph.currentPos--;
     }
+  }
+
+  function forward(){
+    if(datastuff != undefined && data[0] != undefined){
+
+      if(graph.currentPos >= data[0].length-indexes){
+        graph.currentPos = data[0].length-indexes
+      } else {
+        graph.currentPos++;
+      }
+    }
+  }
+
+  function fastForward(){
+    if(datastuff != undefined && data[0] != undefined){
+      graph.currentPos = data[0].length-indexes
+    }
+  }
+
+  export let graph
+  export let inputData = {
+    labels: {
+      labelArray = []
+    }
+  }
+
 </script>
 
-<Line data={dataLine}></Line>
+<div>
+  <LineGraph bind:this={graph} inputData={inputData}></LineGraph>
+  <div class="content-center">
+    <button on:click={()=>{fastBackward()}}><FontAwesomeIcon icon={faFastBackward} /></button>
+    <button on:click={()=>{backward()}}><FontAwesomeIcon icon={faBackward} /></button>
+    <button on:click={()=>{forward()}}><FontAwesomeIcon icon={faForward} /></button>
+    <button on:click={()=>{fastForward()}}><FontAwesomeIcon icon={faFastForward} /></button>
+  </div>
+</div>

@@ -33,6 +33,7 @@ app.use(bodyParser.json());
 app.use('/collector/', new Router(dbManagers.logger).getRouter());
 app.use('/trips/', new Router(dbManagers.trips).getRouter());
 app.use('/data/', new Router(dbManagers.data).getRouter());
+app.use('/graph/', new Router(dbManagers.graph).getRouter());
 
 
 
