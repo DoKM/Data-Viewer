@@ -9,10 +9,19 @@ module.exports = {
   ],
   darkMode: false, // or 'media' or 'class'
   theme: {
-    extend: {},
+    extend: {
+      height: {
+        'fit': 'fit-content',
+      },
+      width: {
+        'fit': 'fit-content',
+      }
+    },
   },
   variants: {
-    extend: {},
+    extend: {
+      
+    },
   },
   purge: {
     content: [

@@ -1,4 +1,6 @@
 <script>
+	import EditGraph from './../../Components/Collector/EditGraph.svelte';
+	import AddGraph from './../../Components/Collector/AddGraph.svelte';
   import AddData from "./../../Components/Collector/AddData.svelte";
   import Modal from "./../../Components/UI/Modal.svelte";
   import API from "./../../Services/Api.js";
@@ -21,6 +23,8 @@
   export let columns = [];
   export let sortedReadings = {};
 
+  export let graphs = []
+
   console.log(params);
 
   // console.log(currentRoute.namedParams)
@@ -30,6 +34,7 @@
   async function loadData() {
     loadTrip();
     loadReadings();
+    loadGraphs();
   }
 
   async function loadTrip() {
@@ -37,6 +42,19 @@
       try {
         API.get(`/trips/collector/${collector}/id/${id}`).then((res) => {
           console.log(res);
+        });
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  async function loadGraphs() {
+    return new Promise((resolve, reject) => {
+      try {
+        API.get(`/graph/collector/${collector}/trip/${id}`).then((res) => {
+          console.log(res);
+          graphs = res;
         });
       } catch (error) {
         reject(error);
@@ -74,6 +92,7 @@
                 numberValue = 0
               }
               sortedReadings[columns[i]] = [...sortedReadings[columns[i]]||[], numberValue] 
+              delete sortedReadings["_id"]
             }
           }
           console.log(sortedReadings);
@@ -117,6 +136,18 @@
   export let editDataFunc;
   export let editTripWindow;
   export let addGraphWindow;
+  export let addGraphFunc;
+  export let editGraphWindow;
+  export let editGraphFunc;
+
+  export let graphEdit;
+
+  export function editGraph(id){
+    
+    graphEdit = graphs[id]
+    editGraphWindow.show()
+  }
+
 </script>
 
 <DashboardLayout header hideHeader headerHeight={56} let:scroller>
@@ -125,13 +156,15 @@
   </div>
 </DashboardLayout>
 <div class="grid h-full grid-cols-2 gap-4">
-  <div>
-    <span class="font-bold ">Graphs should go here WIP</span>
-    <Graph datastuff={[sortedReadings["x"], sortedReadings["y"]]}/>
+  <div class="grid h-fit grid-cols-2 gap-4 ">
+    {#each graphs as graphData, index}
+      <Graph readings={sortedReadings} {graphData} id={index} edit={editGraph}/>
+    {/each}
   </div>
   <div class="h-full m-2">
     {#if readings.length >= 1}
-      <button on:click={() => exportToCSV()}>Download as CSV</button>
+      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 my-2 px-4 rounded" on:click={() => exportToCSV()}>Download as CSV</button>
+      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 my-2 px-4 rounded" on:click={() => editTripWindow.show()}>Edit Trip</button>
       <table class="table-auto border-collapse w-full">
         <thead class="bg-gray-50">
           <tr>
@@ -177,6 +210,7 @@
 </div>
 
 <Modal bind:this={addDataWindow}>
+  <span slot="title">Create new Data</span>
   <span slot="content">
     <AddData
       bind:this={addDataFunc}
@@ -197,6 +231,7 @@
   </span>
 </Modal>
 <Modal bind:this={editDataWindow}>
+  <span slot="title">Create edit Data</span>
   <span slot="content">
     <EditData
       bind:this={editDataFunc}
@@ -302,4 +337,40 @@
   </span>
 </Modal>
 
-<Modal bind:this={addGraphWindow} />
+<Modal bind:this={addGraphWindow}>
+  <span slot="title">Create a new Graph</span>
+  <span slot="content">
+    <AddGraph bind:this={addGraphFunc} readings={sortedReadings} {params}>
+    </AddGraph>
+  </span>
+  <span slot="button">
+    <button
+      type="button"
+      on:click={() => addGraphFunc.send()}
+      class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-green-500 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm"
+    >
+      Create
+    </button>
+</Modal>
+<Modal bind:this={editGraphWindow}>
+  <span slot="title">Edit Graph</span>
+  <span slot="content">
+    <EditGraph bind:this={editGraphFunc} readings={sortedReadings} {params} graph={graphEdit}>
+    </EditGraph>
+  </span>
+  <span slot="button">
+    <button
+      type="button"
+      on:click={() => editGraphFunc.remove()}
+      class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-green-500 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm"
+    >
+      Delete
+    </button>
+    <button
+      type="button"
+      on:click={() => editGraphFunc.update()}
+      class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-green-500 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm"
+    >
+      Create
+    </button>
+</Modal>

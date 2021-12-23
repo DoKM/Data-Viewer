@@ -1,77 +1,75 @@
 <script>
-  import { library } from "@fortawesome/fontawesome-svg-core";
-  import {
-    faBackward,
-    faFastBackward,
-    faFastForward,
-    faForward,
-  } from "@fortawesome/free-solid-svg-icons";
-  import {
-    FontAwesomeIcon,
-    FontAwesomeLayers,
-    FontAwesomeLayersText,
-  } from "fontawesome-svelte";
+  
 
-  library.add(faBackward, faFastBackward, faForward, faFastForward);
+
 
   import LineGraph from "./Graphs/LineGraph.svelte";
   export let data = [];
 
+  export let readings = {};
 
+  export let id;
 
-  export let labels = [];
+ 
 
-  export let graphData = {}
-
-  export let indexes = 10
-
-  
-  function fastBackward(){
-    graph.currentPos = 0;
-  }
-
-  function backward(){
-    if(graph.currentPos <= 0 || (data == undefined && data[0] == undefined)){
-      graph.currentPos =0
-    } else if(graph.currentPos > data[0].length-indexes){
-      graph.currentPos = data[0].length-indexes
-    } else {
-      graph.currentPos--;
-    }
-  }
-
-  function forward(){
-    if(datastuff != undefined && data[0] != undefined){
-
-      if(graph.currentPos >= data[0].length-indexes){
-        graph.currentPos = data[0].length-indexes
-      } else {
-        graph.currentPos++;
+  export let graphData = {
+    name: "test",
+    type: "line",
+    graphs: [
+      {
+        displayName: "Test",
+        name: "x",
+      },
+      {
+        name: "y",
+      },
+      {
+        displayName: "kaas",
+        name: "z",
+        colour: "z"
       }
+    ],
+    label: {
+      auto: false,
+      name: "z",
+      defaultLength: 3
     }
+  };
+
+  let graph;
+  export let inputData = {};
+
+  $: {
+    let graphsData = []
+    let labels = [];
+    if(graphData.label != undefined && graphData.label.auto != undefined && graphData.label.auto == false && graphData.label.name != undefined && readings[graphData.label.name] != undefined){
+      labels = readings[graphData.label.name]
+      console.log(labels)
+    }
+
+
+    graphData.graphs.forEach(graph => {
+      let newGraph = {
+        name: graph.displayName?graph.displayName:graph.name,
+        data: readings[graph.name]
+      }
+      graphsData.push(newGraph)
+    })
+
+    inputData = {
+      name: graphData.name,
+      labels: {
+        defaultLength: graphData.label.defaultLength,
+        labelArray: labels,
+      },
+      data: graphsData,
+    };
   }
 
-  function fastForward(){
-    if(datastuff != undefined && data[0] != undefined){
-      graph.currentPos = data[0].length-indexes
-    }
-  }
-
-  export let graph
-  export let inputData = {
-    labels: {
-      labelArray = []
-    }
-  }
-
+  export let edit = () => {}
+  
 </script>
 
-<div>
-  <LineGraph bind:this={graph} inputData={inputData}></LineGraph>
-  <div class="content-center">
-    <button on:click={()=>{fastBackward()}}><FontAwesomeIcon icon={faFastBackward} /></button>
-    <button on:click={()=>{backward()}}><FontAwesomeIcon icon={faBackward} /></button>
-    <button on:click={()=>{forward()}}><FontAwesomeIcon icon={faForward} /></button>
-    <button on:click={()=>{fastForward()}}><FontAwesomeIcon icon={faFastForward} /></button>
-  </div>
+<div class="h-fit shadow-lg rounded-xl p-4 bg-white overflow-hidden border-b-2 mt-2 py-2 relative">
+  <LineGraph bind:this={graph} {inputData} {id} {edit}/>
 </div>
