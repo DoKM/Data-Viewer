@@ -2,7 +2,7 @@
 
 ## Description
 
-Dataviewer Web App made usingl:
+Dataviewer Web App made using:
 
 Frontend:
 - Svelte
