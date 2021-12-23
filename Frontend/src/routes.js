@@ -8,7 +8,6 @@ const routes = {
   // Exact path
   '/': Home,
 
-  // Using named parameters, with last being optional
   '/collector/:collector': CollectorView,
 
   '/collector/:collector/trips/:trip': TripView,

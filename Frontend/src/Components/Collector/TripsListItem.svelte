@@ -1,8 +1,6 @@
 <script>
 	import {link} from 'svelte-spa-router'
-	// import { navigateTo } from 'svelte-router-spa'
-	// import { Navigate } from 'svelte-router-spa'
-	// logic goes here
+
 	export let trip;
 
 	export let id;
@@ -23,7 +21,6 @@
 	{/each}
 	<td class="px-6 py-4 whitespace-nowrap bg-gray-200 text-right text-sm font-medium">
 		<a href="/collector/{id}/trips/{trip["_id"]}" use:link class="text-indigo-600 hover:text-indigo-900">
-			<!-- <Navigate  to="/collector/{id}/trips/{trip[key]}"> -->
 				
 					Open
 				

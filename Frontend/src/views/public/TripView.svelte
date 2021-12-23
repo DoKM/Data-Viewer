@@ -1,21 +1,32 @@
 <script>
-	import EditGraph from './../../Components/Collector/EditGraph.svelte';
-	import AddGraph from './../../Components/Collector/AddGraph.svelte';
-  import AddData from "./../../Components/Collector/AddData.svelte";
-  import Modal from "./../../Components/UI/Modal.svelte";
   import API from "./../../Services/Api.js";
-  import { saveAs } from "file-saver";
+  import {
+    link
+  } from 'svelte-spa-router'
+  import {
+    saveAs
+  } from "file-saver";
 
-  import { onMount } from "svelte";
+  import {
+    onMount
+  } from "svelte";
 
   import DashboardLayout from "./../../Layout/DashboardLayout.svelte";
   import DataListItem from "../../Components/Collector/DataListItem.svelte";
-  import { trip } from "../../Stores/Trip";
-  import EditData from "../../Components/Collector/EditData.svelte";
+
   import Graph from "../../Components/UI/Graph.svelte";
 
+  import EditTrip from './../../Components/Collector/API/EditTrip.svelte';
+  import EditData from './../../Components/Collector/API/EditData.svelte';
+  import EditGraph from './../../Components/Collector/API/EditGraph.svelte';
+  import AddGraph from './../../Components/Collector/API/AddGraph.svelte';
+  import AddData from "./../../Components/Collector/API/AddData.svelte";
+  
+
+
   export let params = {};
-  // export let currentRoute;
+
+  //Data
 
   export let collector = params.collector;
   export let id = params.trip;
@@ -25,23 +36,24 @@
 
   export let graphs = []
 
-  console.log(params);
+  export let trip = {}
 
-  // console.log(currentRoute.namedParams)
+  //onMount action
 
-  onMount(loadData);
+  onMount(load);
 
-  async function loadData() {
+  async function load() {
     loadTrip();
     loadReadings();
     loadGraphs();
   }
 
+
   async function loadTrip() {
     return new Promise((resolve, reject) => {
       try {
         API.get(`/trips/collector/${collector}/id/${id}`).then((res) => {
-          console.log(res);
+          trip = res;
         });
       } catch (error) {
         reject(error);
@@ -53,7 +65,6 @@
     return new Promise((resolve, reject) => {
       try {
         API.get(`/graph/collector/${collector}/trip/${id}`).then((res) => {
-          console.log(res);
           graphs = res;
         });
       } catch (error) {
@@ -66,10 +77,6 @@
     return new Promise((resolve, reject) => {
       try {
         API.get(`/data/collector/${collector}/trip/${id}`).then((res) => {
-          console.log(res);
-          // console.log(description)
-          // console.log(collector)
-          // console.log(res)
           columns = [];
           res.forEach((reading) => {
             Object.keys(reading).forEach((key) => {
@@ -80,27 +87,24 @@
           });
           readings = res;
           sortedReadings = {};
-          for(let i =0; i<columns.length; i++){
-            for(let ii =0; ii<readings.length; ii++){
+          for (let i = 0; i < columns.length; i++) {
+            for (let ii = 0; ii < readings.length; ii++) {
               let numberValue
-              try{
+              try {
                 numberValue = parseInt(readings[ii][columns[i]])
-                if(numberValue == NaN){
+                if (numberValue == NaN) {
                   numberValue = 0
                 }
-              } catch(error) {
+              } catch (error) {
                 numberValue = 0
               }
-              sortedReadings[columns[i]] = [...sortedReadings[columns[i]]||[], numberValue] 
+              sortedReadings[columns[i]] = [...sortedReadings[columns[i]] || [], numberValue]
               delete sortedReadings["_id"]
             }
           }
-          console.log(sortedReadings);
-          console.log(columns);
           resolve();
         });
       } catch (error) {
-        console.log(error);
         reject(error);
       }
     });
@@ -114,46 +118,54 @@
       header.join(","), // header row first
       ...items.map((row) =>
         header
-          .map((fieldName) => JSON.stringify(row[fieldName], replacer))
-          .join(",")
+        .map((fieldName) => JSON.stringify(row[fieldName], replacer))
+        .join(",")
       ),
     ].join("\r\n");
     console.log(csv);
-    saveAs(new Blob([csv], { type: "text/plain;charset=utf-8" }), "data.csv");
+    saveAs(new Blob([csv], {
+      type: "text/plain;charset=utf-8"
+    }), "data.csv");
   }
 
-  function editData(index) {
-    editDataWindow.show();
-
-    row = readings[index];
-  }
-
-  export let row;
-
+  
+  //Modals
   export let addDataWindow;
-  export let addDataFunc;
   export let editDataWindow;
-  export let editDataFunc;
+  
   export let editTripWindow;
+  
   export let addGraphWindow;
-  export let addGraphFunc;
   export let editGraphWindow;
-  export let editGraphFunc;
-
+  
+  
+  //Data for modals
+  export let row;
   export let graphEdit;
+  
+  function editData(index) {
 
-  export function editGraph(id){
-    
+    editDataWindow.loadRow(readings[index])
+
+    editDataWindow.show();
+  }
+
+  export function editGraph(id) {
+
     graphEdit = graphs[id]
     editGraphWindow.show()
   }
-
 </script>
 
 <DashboardLayout header hideHeader headerHeight={56} let:scroller>
   <div slot="header">
     <div class="header" class:shadow={!!scroller.scroll}>Page title</div>
   </div>
+  <span slot="nav">
+    <li class="sm:inline-block">
+      <a use:link={`/collector/${collector}`} class="p-3 hover:text-red-900">Collector</a>
+    </li>
+  </span>
 </DashboardLayout>
 <div class="grid h-full grid-cols-2 gap-4">
   <div class="grid h-fit grid-cols-2 gap-4 ">
@@ -162,10 +174,27 @@
     {/each}
   </div>
   <div class="h-full m-2">
+    <div class="max-w-sm rounded overflow-hidden shadow-lg">
+      <div class="px-6 py-4">
+        <div class="font-bold text-xl mb-2">Trip: {trip.name}</div>
+        <p class="text-gray-700 text-base">
+          <ul>
+            <li>Trip date: {trip.date}</li>
+            <li>Trip location: {trip.location}</li>
+          </ul>
+      </div>
+      <div class="px-6 pt-4 pb-2">
+        <!-- <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#photography</span>
+        <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#travel</span>
+        <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#winter</span> -->
+        {#if readings.length >= 1}
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 my-2 px-4 rounded" on:click={() => exportToCSV()}>Download as CSV</button>
+        {/if}
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 my-2 px-4 rounded" on:click={() => editTripWindow.show()}>Edit Trip</button>
+      </div>
+    </div>
     {#if readings.length >= 1}
-      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 my-2 px-4 rounded" on:click={() => exportToCSV()}>Download as CSV</button>
-      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 my-2 px-4 rounded" on:click={() => editTripWindow.show()}>Edit Trip</button>
-      <table class="table-auto border-collapse w-full">
+      <table class="table-auto border-collapse w-full mt-4">
         <thead class="bg-gray-50">
           <tr>
             {#each columns as key}
@@ -209,168 +238,28 @@
   Add Graph
 </div>
 
-<Modal bind:this={addDataWindow}>
-  <span slot="title">Create new Data</span>
-  <span slot="content">
-    <AddData
-      bind:this={addDataFunc}
-      {params}
-      colums={columns}
-      reload={loadReadings}
-      {addDataWindow}
-    />
-  </span>
-  <span slot="button">
-    <button
-      type="button"
-      on:click={() => addDataFunc.post()}
-      class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-green-500 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm"
-    >
-      Create
-    </button>
-  </span>
-</Modal>
-<Modal bind:this={editDataWindow}>
-  <span slot="title">Create edit Data</span>
-  <span slot="content">
-    <EditData
-      bind:this={editDataFunc}
-      {params}
-      colums={columns}
-      reading={row}
-      {editData}
-      reload={loadReadings}
-      {editDataWindow}
-    />
-  </span>
-  <span slot="button">
-    <button
-      type="button"
-      on:click={() => editDataFunc.deleteData()}
-      class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-500 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
-    >
-      Delete
-    </button>
-    <button
-      type="button"
-      on:click={() => editDataFunc.update()}
-      class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-green-500 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm"
-    >
-      Edit
-    </button>
-  </span>
-</Modal>
 
-<Modal bind:this={editTripWindow}>
-  <span slot="title">Edit Old Trip</span>
-  <span slot="content">
-    <div class="mb-6 md:flex md:items-center">
-      <div class="md:w-1/3">
-        <label
-          class="block pr-4 mb-1 font-bold text-gray-500 md:text-right md:mb-0"
-          for="inline-name"
-        >
-          Name
-        </label>
-      </div>
-      <div class="md:w-2/3">
-        <input
-          bind:value={$trip.name}
-          class="w-full px-4 py-2 leading-tight text-gray-700 border-2 border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-purple-500"
-          id="inline-name"
-          type="text"
-          placeholder="Trip #"
-        />
-      </div>
-    </div>
-    <div class="mb-6 md:flex md:items-center">
-      <div class="md:w-1/3">
-        <label
-          class="block pr-4 mb-1 font-bold text-gray-500 md:text-right md:mb-0"
-          for="inline-date"
-        >
-          Date
-        </label>
-      </div>
-      <div class="md:w-2/3">
-        <input
-          bind:value={$trip.date}
-          class="w-full px-4 py-2 leading-tight text-gray-700 border-2 border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-purple-500"
-          id="inline-date"
-          type="datetime-local"
-        />
-      </div>
-    </div>
-    <div class="mb-6 md:flex md:items-center">
-      <div class="md:w-1/3">
-        <label
-          class="block pr-4 mb-1 font-bold text-gray-500 md:text-right md:mb-0"
-          for="inline-location"
-        >
-          Location
-        </label>
-      </div>
-      <div class="md:w-2/3">
-        <input
-          bind:value={$trip.location}
-          class="w-full px-4 py-2 leading-tight text-gray-700 border-2 border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-purple-500"
-          id="inline-location"
-          type="text"
-          placeholder="Location"
-        />
-      </div>
-    </div>
+<AddData
+  bind:this={addDataWindow}
+  {params}
+  colums={columns}
+  reload={load}
+  
+/>
 
-    <div class="md:flex md:items-center">
-      <div class="md:w-1/3" />
-      <div class="md:w-2/3" />
-    </div>
-  </span>
-  <span slot="button">
-    <button
-      type="button"
-      on:click={() => editTrip()}
-      class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-green-500 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm"
-    >
-      Edit
-    </button>
-  </span>
-</Modal>
+<EditData
+  bind:this={editDataWindow}
+  {params}
+  colums={columns}
+  reading={row}
+  reload={load}
+/>
 
-<Modal bind:this={addGraphWindow}>
-  <span slot="title">Create a new Graph</span>
-  <span slot="content">
-    <AddGraph bind:this={addGraphFunc} readings={sortedReadings} {params}>
-    </AddGraph>
-  </span>
-  <span slot="button">
-    <button
-      type="button"
-      on:click={() => addGraphFunc.send()}
-      class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-green-500 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm"
-    >
-      Create
-    </button>
-</Modal>
-<Modal bind:this={editGraphWindow}>
-  <span slot="title">Edit Graph</span>
-  <span slot="content">
-    <EditGraph bind:this={editGraphFunc} readings={sortedReadings} {params} graph={graphEdit}>
-    </EditGraph>
-  </span>
-  <span slot="button">
-    <button
-      type="button"
-      on:click={() => editGraphFunc.remove()}
-      class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-green-500 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm"
-    >
-      Delete
-    </button>
-    <button
-      type="button"
-      on:click={() => editGraphFunc.update()}
-      class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-green-500 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm"
-    >
-      Create
-    </button>
-</Modal>
+
+<EditTrip bind:this={editTripWindow} {params} {trip}/>
+
+
+<AddGraph bind:this={addGraphWindow} readings={sortedReadings} {params} reload={load}/>
+
+
+<EditGraph bind:this={editGraphWindow} readings={sortedReadings} {params} graph={graphEdit} reload={load}/>

@@ -38,15 +38,17 @@
 
   export let id;
 
-  export let index = 0;
+  export let index = 1;
   export let width = 10;
+
+  //Sets the width if its not set
   {
-    console.log(inputData);
     if (inputData?.labels?.defaultLength != undefined) {
       width = inputData?.labels?.defaultLength;
     }
   }
 
+  //Generates the labels
   $: {
     if (inputData.data != undefined) {
       if (
@@ -57,7 +59,7 @@
       ) {
         let array = [];
         for (let i = 0; i < width; i++) {
-          array.push(i + index + 1);
+          array.push(i + index);
         }
 
         labels = array;
@@ -75,6 +77,7 @@
     }
   }
 
+  //Generates the datasets when anything changes
   $: {
     let datasets = [];
 
@@ -137,6 +140,7 @@
     }
   }
 
+  //Limiting width value
   $: {
     if (width < 1) {
       width = 1;
@@ -148,6 +152,7 @@
     }
   }
 
+  //limiting index value
   $: {
     if (index < 0) {
       index = 0;

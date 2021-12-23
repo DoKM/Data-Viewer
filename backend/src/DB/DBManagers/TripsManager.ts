@@ -4,6 +4,7 @@ import {
     Request,
     Response
   } from "express";
+
 export class TripsManager extends DBManager {
 
     public prefix:string = "/collector/:collection"
@@ -13,6 +14,19 @@ export class TripsManager extends DBManager {
         let collection = req.params["collection"]?req.params["collection"]:"collectors"
 
         let result = await this.db.getAll(`collector_${collection}`)
+        res.send(result)
+    }
+
+    public getByID = async (req: Request, res: Response, next: NextFunction) => {
+
+        let collector = req.params["collection"]
+        let id = req.params["id"]
+        if(id == undefined || collector == undefined){
+            res.sendStatus(400)
+            return;
+        }
+        let result = await this.db.getID(`collector_${collector}`, id)
+
         res.send(result)
     }
 

@@ -20,6 +20,9 @@ export class LoggerManager extends DBManager {
         let collection = req.params["collection"]?req.params["collection"]:"collectors"
         let id = req.params["id"]
         console.log(req.body)
+        if(req.body["_id"]){
+            delete req.body["_id"]
+        }
         let result = this.db.update(id, collection, req.body)
         console.log(result)
         res.sendStatus(200)

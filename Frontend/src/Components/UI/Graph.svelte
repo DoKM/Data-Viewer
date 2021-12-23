@@ -1,17 +1,14 @@
 <script>
-  
-
-
 
   import LineGraph from "./Graphs/LineGraph.svelte";
-  export let data = [];
+
 
   export let readings = {};
 
   export let id;
 
  
-
+  //Test Data, unused
   export let graphData = {
     name: "test",
     type: "line",
@@ -38,6 +35,8 @@
 
   let graph;
   export let inputData = {};
+
+  //Updates data for the actual graph when input data changes
 
   $: {
     let graphsData = []
