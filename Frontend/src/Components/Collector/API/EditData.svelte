@@ -29,6 +29,8 @@
 
   export let dataId = "";
 
+  //Delete "_id" as its not used
+
   $: {
     if (reading != null) {
       dataId = reading["_id"];
