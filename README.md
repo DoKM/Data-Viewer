@@ -21,6 +21,13 @@ And:
 - MongoDB
 
 
+## Development setup
+ 1. run a mongodb server (Either via the docker compose file up normally)
+ 2. install the required packages via npm/yarn etc.
+ 3. using npm run the dev function on the frontend
+ 4. using npm run the watch-run function on the backend
+ 5. visit the localhost url given by the dev function
+
 ## Installation
 
 Docker:
